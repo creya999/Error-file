@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Login – ADBL Instant Card{% endblock %}
+
+{% block auth_content %}
+<div class="login-box">
+  <div class="login-logo">
+    <div>
+      <img src="{{ url_for('static', filename='adbl.jpeg') }}" alt="ADBL Logo"
+           style="height:90px;object-fit:contain;display:block;margin:0 auto;"/>
+    </div>
+    <p class="mt-2 fw-bold text-success">Agricultural Development Bank Limited</p>
+  </div>
+
+  <div class="login-card card">
+    <div class="login-header">
+      <h5><i class="bi bi-credit-card-2-front me-2"></i>Instant Card System</h5>
+      <small class="text-white-50">Branch Portal Login</small>
+    </div>
+    <div class="card-body p-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }} py-2">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Staff ID or Username</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" name="staff_id" class="form-control" placeholder="Staff ID or Username"
+                   required autofocus autocomplete="username"/>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" id="password" class="form-control"
+                   placeholder="Enter password" required autocomplete="current-password"/>
+            <button class="btn btn-outline-secondary" type="button"
+                    onclick="togglePwd()"><i class="bi bi-eye" id="eyeIcon"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-adbn w-100 py-2 fw-bold">
+          <i class="bi bi-box-arrow-in-right me-1"></i>Login
+        </button>
+      </form>
+    </div>
+  </div>
+  <p class="text-center text-muted small mt-3">
+    &copy; 2024 Agricultural Development Bank Limited. All rights reserved.
+  </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePwd(){
+  const p = document.getElementById('password');
+  const e = document.getElementById('eyeIcon');
+  if(p.type==='password'){ p.type='text'; e.className='bi bi-eye-slash'; }
+  else { p.type='password'; e.className='bi bi-eye'; }
+}
+</script>
+{% endblock %}

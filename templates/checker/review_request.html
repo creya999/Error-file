@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% block title %}Review {{ req.request_no }} – Checker{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-pencil-square me-2"></i>Review Card Request</h4>
+  <a href="{{ url_for('checker.dashboard') }}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i>Back
+  </a>
+</div>
+
+<div class="row g-4">
+
+  <!-- ── Request Details ── -->
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-file-earmark-text me-2 text-success"></i>Request Information
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-6">
+            <div class="text-muted small">Request Number</div>
+            <div class="fw-bold text-success fs-5">{{ req.request_no }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Checker Status</div>
+            {% if req.checker_status == 'Approved' %}
+              <span class="badge bg-success fs-6 px-3 py-2">Forwarded to Admin</span>
+            {% elif req.checker_status == 'Rejected' %}
+              <span class="badge bg-danger fs-6 px-3 py-2">Rejected</span>
+            {% else %}
+              <span class="badge bg-warning text-dark fs-6 px-3 py-2">Awaiting Review</span>
+            {% endif %}
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Branch</div>
+            <div class="fw-semibold">{{ req.branch_name }}</div>
+            <div class="text-muted small">{{ req.branch_code }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Submitted By (Maker)</div>
+            <div class="fw-semibold">{{ req.staff_id }}</div>
+            <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ req.staff_phone }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Card Type</div>
+            <div class="fw-semibold">
+              {% if req.card_type == 'Visa Card' %}
+                <span class="badge bg-primary">Visa Card</span>
+              {% elif req.card_type == 'NepalPay Card' %}
+                <span class="badge bg-secondary">NepalPay Card</span>
+              {% elif req.card_type == 'UnionPay Card' %}
+                <span class="badge bg-warning text-dark">UnionPay Card</span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Requested At</div>
+            <div class="fw-semibold">{{ req.requested_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Cards Requested</div>
+            <div class="fw-bold text-success fs-3">{{ req.quantity }}</div>
+          </div>
+
+          <!-- Admin status visible to checker so they can track lifecycle -->
+          <div class="col-6">
+            <div class="text-muted small">Admin Status</div>
+            {% if req.status == 'Pending' %}
+              <span class="badge badge-pending px-2 py-1"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+            {% elif req.status == 'Approved' %}
+              <span class="badge badge-approved px-2 py-1"><i class="bi bi-check-circle me-1"></i>Approved</span>
+            {% elif req.status == 'Dispatched' %}
+              <span class="badge badge-dispatched px-2 py-1"><i class="bi bi-truck me-1"></i>Dispatched</span>
+            {% elif req.status == 'Received' %}
+              <span class="badge badge-received px-2 py-1"><i class="bi bi-patch-check me-1"></i>Received</span>
+            {% else %}
+              <span class="badge badge-rejected px-2 py-1"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+            {% endif %}
+          </div>
+
+          {% if req.remarks %}
+          <div class="col-12">
+            <div class="text-muted small">Maker Remarks</div>
+            <div class="border rounded p-2 bg-light">{{ req.remarks }}</div>
+          </div>
+          {% endif %}
+
+          {% if req.checker_remarks %}
+          <div class="col-12">
+            <div class="text-muted small">Checker Remarks</div>
+            <div class="border rounded p-2 bg-light">{{ req.checker_remarks }}</div>
+            <div class="text-muted small mt-1">
+              By {{ req.checked_by }} on {{ req.checked_at.strftime('%Y-%m-%d %H:%M') if req.checked_at else '—' }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if req.admin_remarks %}
+          <div class="col-12">
+            <div class="text-muted small">Admin Remarks</div>
+            <div class="border border-success rounded p-2 bg-light">{{ req.admin_remarks }}</div>
+            <div class="text-muted small mt-1">
+              By {{ req.reviewed_by }} on {{ req.reviewed_at.strftime('%Y-%m-%d %H:%M') if req.reviewed_at else '—' }}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Card sales info (visible after Received) -->
+          {% if req.status == 'Received' %}
+          <div class="col-12">
+            <div class="border border-info rounded p-3">
+              <div class="fw-semibold text-info mb-2">
+                <i class="bi bi-bar-chart-line me-1"></i>Card Sales Tracking
+              </div>
+              <div class="row text-center g-2">
+                <div class="col-4">
+                  <div class="border rounded p-2 bg-white">
+                    <div class="text-muted small">Approved</div>
+                    <div class="fw-bold fs-5 text-success">{{ req.approved_quantity }}</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="border rounded p-2 bg-white">
+                    <div class="text-muted small">Sold</div>
+                    {% if req.cards_sold is not none %}
+                      <div class="fw-bold fs-5 text-warning">{{ req.cards_sold }}</div>
+                    {% else %}
+                      <div class="fw-bold fs-5 text-muted">—</div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="border rounded p-2 bg-white">
+                    <div class="text-muted small">Remaining</div>
+                    {% if req.cards_remaining is not none %}
+                      <div class="fw-bold fs-5 {% if req.cards_remaining == 0 %}text-danger{% else %}text-primary{% endif %}">
+                        {{ req.cards_remaining }}
+                      </div>
+                    {% else %}
+                      <div class="fw-bold fs-5 text-muted">—</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Sale history (read-only for checker) -->
+          {% if req.sales %}
+          <div class="col-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-white fw-semibold text-success">
+                <i class="bi bi-clock-history me-2"></i>Card Sale History
+              </div>
+              <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>#</th>
+                      <th>Date of Sale</th>
+                      <th>Cards Sold</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for sale in req.sales | sort(attribute='sold_date') %}
+                    <tr>
+                      <td class="text-muted small">{{ loop.index }}</td>
+                      <td><span class="badge bg-info text-dark">{{ sale.sold_date.strftime('%Y-%m-%d') }}</span></td>
+                      <td><span class="badge bg-warning text-dark">{{ sale.cards_sold }}</span></td>
+                      <td class="small">{{ sale.recorded_by or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot class="table-light">
+                    <tr>
+                      <td colspan="2" class="fw-semibold text-end small">Total Sold:</td>
+                      <td><span class="badge bg-danger">{{ req.cards_sold }}</span></td>
+                      <td class="fw-semibold small">
+                        Remaining: <span class="badge bg-primary">{{ req.cards_remaining }}</span>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Action Panel ── -->
+  <div class="col-md-5">
+    {% if req.checker_status == 'Pending' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-check2-square me-2 text-success"></i>Take Action
+      </div>
+      <div class="card-body">
+        <form method="POST">
+
+          <!-- Editable quantity -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Quantity
+              <span class="text-muted fw-normal small">(reduce if needed)</span>
+            </label>
+            <input type="number" name="quantity" class="form-control"
+                   value="{{ req.quantity }}" min="1" max="{{ req.quantity }}" required>
+            <div class="form-text">Maker requested <strong>{{ req.quantity }}</strong> cards. You can reduce but not increase.</div>
+          </div>
+
+          <!-- Editable remarks -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Remarks
+              <span class="text-muted fw-normal small">(edit if needed)</span>
+            </label>
+            <textarea name="remarks" class="form-control" rows="2">{{ req.remarks or '' }}</textarea>
+          </div>
+
+          <!-- Checker remarks -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Checker Remarks
+              <span class="text-danger small">*required to reject</span>
+            </label>
+            <textarea name="checker_remarks" class="form-control" rows="3"
+                      placeholder="Add notes or reason for rejection..."></textarea>
+          </div>
+
+          <!-- FIX: Delete button removed — only Approve and Reject allowed -->
+          <div class="d-grid gap-2">
+            <button type="submit" name="action" value="Approved"
+                    class="btn btn-success py-2"
+                    onclick="return confirm('Approve and forward to Admin?')">
+              <i class="bi bi-check-circle me-1"></i>Approve & Forward to Admin
+            </button>
+            <button type="submit" name="action" value="Rejected"
+                    class="btn btn-warning py-2"
+                    onclick="return confirm('Reject this request?')">
+              <i class="bi bi-x-circle me-1"></i>Reject Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- Already actioned — read only summary -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-info-circle me-2 text-success"></i>Action Taken
+      </div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="text-muted small">Decision</div>
+          {% if req.checker_status == 'Approved' %}
+            <span class="badge bg-success">Forwarded to Admin</span>
+          {% else %}
+            <span class="badge bg-danger">Rejected</span>
+          {% endif %}
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Actioned By</div>
+          <div class="fw-semibold">{{ req.checked_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Actioned At</div>
+          <div class="fw-semibold">{{ req.checked_at.strftime('%Y-%m-%d %H:%M') if req.checked_at else '—' }}</div>
+        </div>
+        {% if req.checker_remarks %}
+        <div>
+          <div class="text-muted small">Checker Remarks</div>
+          <div class="border rounded p-2 bg-light">{{ req.checker_remarks }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

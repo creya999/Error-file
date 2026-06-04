@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h4><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h4>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-primary bg-opacity-10 text-primary"><i class="bi bi-layers"></i></div>
+        <div>
+          <div class="fs-3 fw-bold">{{ stats.total }}</div>
+          <div class="text-muted small">Total Requests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-warning bg-opacity-10 text-warning"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+          <div class="fs-3 fw-bold">{{ stats.pending }}</div>
+          <div class="text-muted small">Pending</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle"></i></div>
+        <div>
+          <div class="fs-3 fw-bold">{{ stats.approved }}</div>
+          <div class="text-muted small">Approved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-success bg-opacity-10 text-success"><i class="bi bi-credit-card-2-front"></i></div>
+        <div>
+          <div class="fs-3 fw-bold">{{ stats.total_qty }}</div>
+          <div class="text-muted small">Cards Approved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Export Buttons -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+  <a href="{{ url_for('admin.export_pdf', status='All') }}" class="btn btn-danger btn-sm" target="_blank">
+    <i class="bi bi-file-earmark-pdf me-1"></i>Export All PDF
+  </a>
+  <a href="{{ url_for('admin.export_excel', status='All') }}" class="btn btn-success btn-sm" target="_blank">
+    <i class="bi bi-file-earmark-excel me-1"></i>Export All Excel
+  </a>
+  <a href="{{ url_for('admin.export_pdf', status='Approved') }}" class="btn btn-outline-danger btn-sm" target="_blank">
+    <i class="bi bi-file-earmark-pdf me-1"></i>Approved Only PDF
+  </a>
+  <a href="{{ url_for('admin.export_excel', status='Approved') }}" class="btn btn-outline-success btn-sm" target="_blank">
+    <i class="bi bi-file-earmark-excel me-1"></i>Approved Only Excel
+  </a>
+</div>
+
+<!-- Recent Requests — latest 10 only, loaded fast on login -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">
+      <i class="bi bi-clock-history me-2 text-success"></i>Recent Requests
+      <span class="text-muted fw-normal small ms-1">(latest {{ recent|length }})</span>
+    </span>
+    <a href="{{ url_for('admin.all_requests') }}" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-list-ul me-1"></i>View All
+    </a>
+  </div>
+  <div class="card-body p-0">
+    {% if recent %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Request No</th>
+            <th>Branch</th>
+            <th>Card Type</th>
+            <th>Qty (Req / Approved)</th>
+            <th>Requested At</th>
+            <th>Checker</th>
+            <th>Status</th>
+            <th style="width:80px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in recent %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+
+            <td class="fw-semibold text-success">{{ r.request_no }}</td>
+
+            <td>
+              {{ r.branch_name }}<br>
+              <small class="text-muted">{{ r.branch_code }}</small>
+            </td>
+
+            <td>
+              {% if r.card_type == 'Visa Card' %}
+                <span class="badge bg-primary">Visa Card</span>
+              {% elif r.card_type == 'NepalPay Card' %}
+                <span class="badge bg-secondary">NepalPay Card</span>
+              {% elif r.card_type == 'UnionPay Card' %}
+                <span class="badge bg-warning text-dark">UnionPay Card</span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <span class="badge bg-secondary">{{ r.quantity }}</span>
+              {% if r.approved_quantity is not none %}
+                {% if r.approved_quantity < r.quantity %}
+                  / <span class="badge bg-warning text-dark">{{ r.approved_quantity }}</span>
+                {% else %}
+                  / <span class="badge bg-success">{{ r.approved_quantity }}</span>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td class="small">{{ r.requested_at.strftime('%Y-%m-%d %H:%M') }}</td>
+
+            <td>
+              {% if r.checker_status == 'Approved' %}
+                <span class="badge bg-success">✓ Forwarded</span>
+              {% elif r.checker_status == 'Rejected' %}
+                <span class="badge bg-danger">✗ Rejected</span>
+              {% elif r.checker_status == 'Legacy' %}
+                <span class="badge bg-secondary">Legacy</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if r.status == 'Pending' %}
+                <span class="badge badge-pending"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+              {% elif r.status == 'Approved' %}
+                <span class="badge badge-approved"><i class="bi bi-check-circle me-1"></i>Approved</span>
+              {% elif r.status == 'Dispatched' %}
+                <span class="badge badge-dispatched"><i class="bi bi-truck me-1"></i>Dispatched</span>
+              {% elif r.status == 'Received' %}
+                <span class="badge badge-received"><i class="bi bi-patch-check me-1"></i>Received</span>
+              {% else %}
+                <span class="badge badge-rejected"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <a href="{{ url_for('admin.review_request', req_id=r.id) }}"
+                 class="btn btn-sm btn-adbn">
+                <i class="bi bi-eye me-1"></i>Review
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- Footer link to full list -->
+    <div class="card-footer bg-white text-center border-top-0 py-2">
+      <a href="{{ url_for('admin.all_requests') }}" class="text-success small">
+        <i class="bi bi-arrow-right-circle me-1"></i>View all requests →
+      </a>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No checker-approved requests yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

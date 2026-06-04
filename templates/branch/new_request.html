@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}New Card Request – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h4><i class="bi bi-plus-circle me-2"></i>New Instant Card Request</h4>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold text-success">
+        <i class="bi bi-credit-card-2-front me-2"></i>Card Request Form
+      </div>
+      <div class="card-body p-4">
+
+        <!-- Branch info (read-only display) -->
+        <div class="alert alert-success py-2 mb-4 small">
+          <i class="bi bi-bank me-1"></i>
+          <strong>Branch:</strong> {{ current_user.branch_name }} ({{ current_user.branch_code }})
+          &nbsp;|&nbsp;
+          <strong>Staff ID:</strong> {{ current_user.staff_id }}
+        </div>
+
+        <form method="POST" action="{{ url_for('branch.new_request') }}">
+
+          <!-- Quantity -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              Number of Instant Cards Required <span class="text-danger">*</span>
+            </label>
+            <input type="number" name="quantity" class="form-control"
+                   min="1" placeholder="e.g. 10"
+                   value="{{ form_data.get('quantity', '') }}" required/>
+            <div class="form-text">Enter the total count of blank instant cards to request from Head Office.</div>
+          </div>
+
+          <!-- Card Type -->
+<div class="mb-3">
+  <label class="form-label fw-semibold">
+    Card Type <span class="text-danger">*</span>
+  </label>
+  <select name="card_type" class="form-select" required>
+    <option value="" disabled {% if not form_data.get('card_type') %}selected{% endif %}>— Select Card Type —</option>
+    <option value="Visa Card"     {% if form_data.get('card_type') == 'Visa Card'     %}selected{% endif %}>Visa Card</option>
+    <option value="NepalPay Card" {% if form_data.get('card_type') == 'NepalPay Card' %}selected{% endif %}>NepalPay Card</option>
+    <option value="UnionPay Card" {% if form_data.get('card_type') == 'UnionPay Card' %}selected{% endif %}>UnionPay Card</option>
+  </select>
+  <div class="form-text">Select the type of instant card being requested.</div>
+</div>
+
+
+          <!-- Mobile -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              Your Mobile Number <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+              <input type="text" name="mobile" class="form-control"
+                     placeholder="98XXXXXXXX"
+                     value="{{ form_data.get('mobile', current_user.phone) }}" required/>
+            </div>
+            <div class="form-text">Contact number for this card request.</div>
+          </div>
+
+          <!-- Remarks -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Remarks / Purpose</label>
+            <textarea name="remarks" class="form-control" rows="3"
+                      placeholder="Optional – add any special notes for the head office...">{{ form_data.get('remarks', '') }}</textarea>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-adbn px-4">
+              <i class="bi bi-send me-1"></i>Submit Request
+            </button>
+            <a href="{{ url_for('branch.dashboard') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

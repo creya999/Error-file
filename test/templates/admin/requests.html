@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}All Requests – ADBL Admin{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-card-list me-2"></i>All Card Requests</h4>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('admin.export_pdf', status=filters.status or 'All') }}"
+       class="btn btn-danger btn-sm" target="_blank">
+      <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+    </a>
+    <a href="{{ url_for('admin.export_excel', status=filters.status or 'All') }}"
+       class="btn btn-success btn-sm" target="_blank">
+      <i class="bi bi-file-earmark-excel me-1"></i>Excel
+    </a>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-3">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-2">
+        <label class="form-label small mb-1 fw-semibold">Status</label>
+        <select name="status" class="form-select form-select-sm">
+          <option value="">All</option>
+          <option value="Pending"  {% if filters.status=='Pending'  %}selected{% endif %}>Pending</option>
+          <option value="Approved" {% if filters.status=='Approved' %}selected{% endif %}>Approved</option>
+          <option value="Rejected" {% if filters.status=='Rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1 fw-semibold">Branch</label>
+        <select name="branch" class="form-select form-select-sm" id="branchFilter">
+          <option value="">All Branches</option>
+          {% for b in branches %}
+            <option value="{{ b.branch_code }}" {% if filters.branch == b.branch_code %}selected{% endif %}>
+              {{ b.branch_name }} ({{ b.branch_code }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1 fw-semibold">From Date</label>
+        <input type="date" name="date_from" class="form-control form-control-sm"
+               value="{{ filters.date_from }}"/>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1 fw-semibold">To Date</label>
+        <input type="date" name="date_to" class="form-control form-control-sm"
+               value="{{ filters.date_to }}"/>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-adbn btn-sm flex-grow-1">
+          <i class="bi bi-search me-1"></i>Filter
+        </button>
+        <a href="{{ url_for('admin.all_requests') }}" class="btn btn-outline-secondary btn-sm">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white small text-muted">
+    Showing <strong>{{ requests|length }}</strong> request(s)
+    &nbsp;|&nbsp; Total Cards:
+    <strong>{{ requests | sum(attribute='quantity') }}</strong>
+  </div>
+  <div class="card-body p-0">
+    {% if requests %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Request No</th>
+            <th>Branch</th>
+            <th>Staff ID</th>
+            <th>Phone</th>
+            <th>Qty (Req / Approved)</th>
+            <th>Remarks</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+            <td><span class="fw-semibold text-success">{{ r.request_no }}</span></td>
+            <td>{{ r.branch_name }}<br><small class="text-muted">{{ r.branch_code }}</small></td>
+            <td>{{ r.staff_id }}</td>
+            <td>{{ r.staff_phone }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ r.quantity }}</span>
+              {% if r.approved_quantity is not none %}
+                {% if r.approved_quantity < r.quantity %}
+                  / <span class="badge bg-warning text-dark">{{ r.approved_quantity }}</span>
+                {% else %}
+                  / <span class="badge bg-success">{{ r.approved_quantity }}</span>
+                {% endif %}
+              {% endif %}
+            </td>
+            <td class="small text-muted">{{ r.remarks or '—' }}</td>
+            <td class="small">{{ r.requested_at.strftime('%Y-%m-%d') }}</td>
+            <td>
+              {% if r.status == 'Pending' %}
+                <span class="badge badge-pending"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+              {% elif r.status == 'Approved' %}
+                <span class="badge badge-approved"><i class="bi bi-check-circle me-1"></i>Approved</span>
+              {% elif r.status == 'Dispatched' %}
+                <span class="badge badge-dispatched"><i class="bi bi-truck me-1"></i>Dispatched</span>
+              {% elif r.status == 'Received' %}
+                <span class="badge badge-received"><i class="bi bi-patch-check me-1"></i>Received</span>
+              {% else %}
+                <span class="badge badge-rejected"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('admin.review_request', req_id=r.id) }}"
+                 class="btn btn-sm btn-adbn">
+                {% if r.status == 'Pending' %}
+                  <i class="bi bi-pencil-square me-1"></i>Review
+                {% else %}
+                  <i class="bi bi-eye me-1"></i>View
+                {% endif %}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No requests found matching the filters.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

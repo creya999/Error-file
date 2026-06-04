@@ -1,0 +1,1142 @@
+[
+  {
+    "branch_code": "001",
+    "branch_name": "Head Office Kathmandu"
+  },
+  {
+    "branch_code": "002",
+    "branch_name": "Ramshahpath Branch"
+  },
+  {
+    "branch_code": "003",
+    "branch_name": "Biratnagar Prov Office"
+  },
+  {
+    "branch_code": "004",
+    "branch_name": "Dhulabari Branch"
+  },
+  {
+    "branch_code": "005",
+    "branch_name": "Bhadrapur Branch"
+  },
+  {
+    "branch_code": "006",
+    "branch_name": "Birtamod Branch"
+  },
+  {
+    "branch_code": "007",
+    "branch_name": "Surunga Branch"
+  },
+  {
+    "branch_code": "008",
+    "branch_name": "Damak Branch"
+  },
+  {
+    "branch_code": "009",
+    "branch_name": "Ilam Branch"
+  },
+  {
+    "branch_code": "010",
+    "branch_name": "Phikkal Branch"
+  },
+  {
+    "branch_code": "011",
+    "branch_name": "Mangalbare Branch"
+  },
+  {
+    "branch_code": "012",
+    "branch_name": "Phidim Branch"
+  },
+  {
+    "branch_code": "013",
+    "branch_name": "Taplejung Branch"
+  },
+  {
+    "branch_code": "014",
+    "branch_name": "Rangeli Branch"
+  },
+  {
+    "branch_code": "015",
+    "branch_name": "Biratchowk Branch"
+  },
+  {
+    "branch_code": "016",
+    "branch_name": "Biratnagar Branch"
+  },
+  {
+    "branch_code": "017",
+    "branch_name": "Urlabari Branch"
+  },
+  {
+    "branch_code": "018",
+    "branch_name": "Kanchanbari Branch"
+  },
+  {
+    "branch_code": "019",
+    "branch_name": "Aambari Branch"
+  },
+  {
+    "branch_code": "020",
+    "branch_name": "Tinpaini Branch"
+  },
+  {
+    "branch_code": "021",
+    "branch_name": "Netachowk Branch"
+  },
+  {
+    "branch_code": "022",
+    "branch_name": "Letang Branch"
+  },
+  {
+    "branch_code": "023",
+    "branch_name": "Inaruwa Branch"
+  },
+  {
+    "branch_code": "024",
+    "branch_name": "Harinagara Branch"
+  },
+  {
+    "branch_code": "025",
+    "branch_name": "Barju Branch"
+  },
+  {
+    "branch_code": "026",
+    "branch_name": "Itahari Branch"
+  },
+  {
+    "branch_code": "027",
+    "branch_name": "Dharan Branch"
+  },
+  {
+    "branch_code": "028",
+    "branch_name": "Duhabi Branch"
+  },
+  {
+    "branch_code": "029",
+    "branch_name": "Laukahi Branch"
+  },
+  {
+    "branch_code": "030",
+    "branch_name": "Dhankuta Branch"
+  },
+  {
+    "branch_code": "031",
+    "branch_name": "Terhathum Branch"
+  },
+  {
+    "branch_code": "032",
+    "branch_name": "Bhojpur Branch"
+  },
+  {
+    "branch_code": "033",
+    "branch_name": "Chainpur Sankhuwasava"
+  },
+  {
+    "branch_code": "034",
+    "branch_name": "Khandbari Branch"
+  },
+  {
+    "branch_code": "036",
+    "branch_name": "Kanchanpur Branch"
+  },
+  {
+    "branch_code": "037",
+    "branch_name": "Kalyanpur Branch"
+  },
+  {
+    "branch_code": "038",
+    "branch_name": "Bodebarsain Branch"
+  },
+  {
+    "branch_code": "039",
+    "branch_name": "Rajbiraj Branch"
+  },
+  {
+    "branch_code": "040",
+    "branch_name": "Hanumannagar Branch"
+  },
+  {
+    "branch_code": "042",
+    "branch_name": "Siraha Branch"
+  },
+  {
+    "branch_code": "043",
+    "branch_name": "Mirchaiya Branch"
+  },
+  {
+    "branch_code": "044",
+    "branch_name": "Shukhipur Branch"
+  },
+  {
+    "branch_code": "045",
+    "branch_name": "Lahan Branch"
+  },
+  {
+    "branch_code": "046",
+    "branch_name": "Gaighat Branch"
+  },
+  {
+    "branch_code": "047",
+    "branch_name": "Katari Branch"
+  },
+  {
+    "branch_code": "048",
+    "branch_name": "Beltar Branch"
+  },
+  {
+    "branch_code": "049",
+    "branch_name": "Diktel Branch"
+  },
+  {
+    "branch_code": "050",
+    "branch_name": "Okhaldhunga Branch"
+  },
+  {
+    "branch_code": "051",
+    "branch_name": "Salleri Branch"
+  },
+  {
+    "branch_code": "052",
+    "branch_name": "Janakpur Prov Office"
+  },
+  {
+    "branch_code": "053",
+    "branch_name": "Dhalkebar Branch"
+  },
+  {
+    "branch_code": "054",
+    "branch_name": "Sabaila Branch"
+  },
+  {
+    "branch_code": "055",
+    "branch_name": "Khajuri Branch"
+  },
+  {
+    "branch_code": "056",
+    "branch_name": "Nagrain Branch"
+  },
+  {
+    "branch_code": "057",
+    "branch_name": "Ramanandachowk Branch"
+  },
+  {
+    "branch_code": "058",
+    "branch_name": "Shivachowk Janakpur"
+  },
+  {
+    "branch_code": "059",
+    "branch_name": "Jaleshwor Branch"
+  },
+  {
+    "branch_code": "060",
+    "branch_name": "Gaushala Mahottari"
+  },
+  {
+    "branch_code": "061",
+    "branch_name": "Balawa Branch"
+  },
+  {
+    "branch_code": "062",
+    "branch_name": "Loharpatti Branch"
+  },
+  {
+    "branch_code": "063",
+    "branch_name": "Bardibas Branch"
+  },
+  {
+    "branch_code": "064",
+    "branch_name": "Malangawa Branch"
+  },
+  {
+    "branch_code": "065",
+    "branch_name": "Ishworpur Branch"
+  },
+  {
+    "branch_code": "066",
+    "branch_name": "Barahthawa Branch"
+  },
+  {
+    "branch_code": "067",
+    "branch_name": "Nawalpur Branch"
+  },
+  {
+    "branch_code": "068",
+    "branch_name": "Sindhuli Branch"
+  },
+  {
+    "branch_code": "069",
+    "branch_name": "Manthali Branch"
+  },
+  {
+    "branch_code": "070",
+    "branch_name": "Charikot Branch"
+  },
+  {
+    "branch_code": "071",
+    "branch_name": "Birgunj Prov Office"
+  },
+  {
+    "branch_code": "072",
+    "branch_name": "Pokhariya Branch"
+  },
+  {
+    "branch_code": "073",
+    "branch_name": "Sakhuwaparsauni Branch"
+  },
+  {
+    "branch_code": "074",
+    "branch_name": "Birgunj Branch"
+  },
+  {
+    "branch_code": "075",
+    "branch_name": "Kalaiya Branch"
+  },
+  {
+    "branch_code": "076",
+    "branch_name": "Nijgadh Branch"
+  },
+  {
+    "branch_code": "077",
+    "branch_name": "Amritgunj Branch"
+  },
+  {
+    "branch_code": "078",
+    "branch_name": "Simara Branch"
+  },
+  {
+    "branch_code": "079",
+    "branch_name": "Bariyarpur Branch"
+  },
+  {
+    "branch_code": "080",
+    "branch_name": "Gaur Branch"
+  },
+  {
+    "branch_code": "081",
+    "branch_name": "Chandranighapur Branch"
+  },
+  {
+    "branch_code": "082",
+    "branch_name": "Garuda Branch"
+  },
+  {
+    "branch_code": "083",
+    "branch_name": "Kantirajpath Branch"
+  },
+  {
+    "branch_code": "084",
+    "branch_name": "Palung Branch"
+  },
+  {
+    "branch_code": "085",
+    "branch_name": "Hetauda Branch"
+  },
+  {
+    "branch_code": "086",
+    "branch_name": "Bharatpur Branch"
+  },
+  {
+    "branch_code": "087",
+    "branch_name": "Gunjanagar Branch"
+  },
+  {
+    "branch_code": "088",
+    "branch_name": "Madi Branch"
+  },
+  {
+    "branch_code": "089",
+    "branch_name": "Narayangadh Branch"
+  },
+  {
+    "branch_code": "090",
+    "branch_name": "Chitawan Prov Office"
+  },
+  {
+    "branch_code": "091",
+    "branch_name": "Parsakhairahani Branch"
+  },
+  {
+    "branch_code": "092",
+    "branch_name": "Tandi Branch"
+  },
+  {
+    "branch_code": "093",
+    "branch_name": "Hakimchowk Bharatpur"
+  },
+  {
+    "branch_code": "094",
+    "branch_name": "Kathmandu Prov Office"
+  },
+  {
+    "branch_code": "095",
+    "branch_name": "Ratnapark Branch"
+  },
+  {
+    "branch_code": "096",
+    "branch_name": "Budhanilkanth Branch"
+  },
+  {
+    "branch_code": "097",
+    "branch_name": "Samakhusi Branch"
+  },
+  {
+    "branch_code": "098",
+    "branch_name": "Sankhu Branch"
+  },
+  {
+    "branch_code": "099",
+    "branch_name": "Putalisadak Branch"
+  },
+  {
+    "branch_code": "100",
+    "branch_name": "Newroad Branch"
+  },
+  {
+    "branch_code": "101",
+    "branch_name": "Thamel Branch"
+  },
+  {
+    "branch_code": "102",
+    "branch_name": "New Baneshwor Branch"
+  },
+  {
+    "branch_code": "103",
+    "branch_name": "Kalimati Branch"
+  },
+  {
+    "branch_code": "104",
+    "branch_name": "Maharajgunj Branch"
+  },
+  {
+    "branch_code": "105",
+    "branch_name": "Chabahil Branch"
+  },
+  {
+    "branch_code": "106",
+    "branch_name": "Tripureshwor Branch"
+  },
+  {
+    "branch_code": "107",
+    "branch_name": "Koteshwor Branch"
+  },
+  {
+    "branch_code": "108",
+    "branch_name": "Jorpati Branch"
+  },
+  {
+    "branch_code": "109",
+    "branch_name": "Swyambhu Branch"
+  },
+  {
+    "branch_code": "110",
+    "branch_name": "Kalanki Branch"
+  },
+  {
+    "branch_code": "111",
+    "branch_name": "Kirtipur Branch"
+  },
+  {
+    "branch_code": "112",
+    "branch_name": "Gaushala Kathmandu"
+  },
+  {
+    "branch_code": "113",
+    "branch_name": "Maitidevi Branch"
+  },
+  {
+    "branch_code": "114",
+    "branch_name": "Naksal Branch"
+  },
+  {
+    "branch_code": "115",
+    "branch_name": "Kapan Branch"
+  },
+  {
+    "branch_code": "116",
+    "branch_name": "Lagenkhel Branch"
+  },
+  {
+    "branch_code": "117",
+    "branch_name": "Chapagaun Branch"
+  },
+  {
+    "branch_code": "118",
+    "branch_name": "Satdobato Branch"
+  },
+  {
+    "branch_code": "119",
+    "branch_name": "Mangalbazar Branch"
+  },
+  {
+    "branch_code": "120",
+    "branch_name": "Kupandol Branch"
+  },
+  {
+    "branch_code": "121",
+    "branch_name": "Sallaghari Branch"
+  },
+  {
+    "branch_code": "122",
+    "branch_name": "Dudhapati Branch"
+  },
+  {
+    "branch_code": "123",
+    "branch_name": "Gatthaghar Branch"
+  },
+  {
+    "branch_code": "124",
+    "branch_name": "Bode Branch"
+  },
+  {
+    "branch_code": "125",
+    "branch_name": "Dhulikhel Branch"
+  },
+  {
+    "branch_code": "126",
+    "branch_name": "Banepa Branch"
+  },
+  {
+    "branch_code": "127",
+    "branch_name": "Panchkhal Branch"
+  },
+  {
+    "branch_code": "128",
+    "branch_name": "Gajuri Branch"
+  },
+  {
+    "branch_code": "130",
+    "branch_name": "Dhadingbesi Branch"
+  },
+  {
+    "branch_code": "131",
+    "branch_name": "Khanikhola Branch"
+  },
+  {
+    "branch_code": "132",
+    "branch_name": "Trisuli Branch"
+  },
+  {
+    "branch_code": "133",
+    "branch_name": "Kharanitar Branch"
+  },
+  {
+    "branch_code": "134",
+    "branch_name": "Ranipauwa Branch"
+  },
+  {
+    "branch_code": "135",
+    "branch_name": "Chautara Branch"
+  },
+  {
+    "branch_code": "136",
+    "branch_name": "Melamchi Branch"
+  },
+  {
+    "branch_code": "137",
+    "branch_name": "Barhabise Branch"
+  },
+  {
+    "branch_code": "138",
+    "branch_name": "Dhunche Branch"
+  },
+  {
+    "branch_code": "139",
+    "branch_name": "Bhairahawa Prov Office"
+  },
+  {
+    "branch_code": "140",
+    "branch_name": "Dayanagar Branch"
+  },
+  {
+    "branch_code": "141",
+    "branch_name": "Majhagaun Branch"
+  },
+  {
+    "branch_code": "142",
+    "branch_name": "Parroha Branch"
+  },
+  {
+    "branch_code": "143",
+    "branch_name": "Bhairahawa Branch"
+  },
+  {
+    "branch_code": "144",
+    "branch_name": "Manglapur Branch"
+  },
+  {
+    "branch_code": "145",
+    "branch_name": "Dhakdhai Branch"
+  },
+  {
+    "branch_code": "146",
+    "branch_name": "Siddharthanagar Branch"
+  },
+  {
+    "branch_code": "147",
+    "branch_name": "Khasauli Butwal"
+  },
+  {
+    "branch_code": "148",
+    "branch_name": "Butwal Kalikanagar"
+  },
+  {
+    "branch_code": "149",
+    "branch_name": "Lumbini Branch"
+  },
+  {
+    "branch_code": "150",
+    "branch_name": "Parasi Branch"
+  },
+  {
+    "branch_code": "151",
+    "branch_name": "Rajahar Branch"
+  },
+  {
+    "branch_code": "152",
+    "branch_name": "Kawasoti Branch"
+  },
+  {
+    "branch_code": "153",
+    "branch_name": "Bardaghat Branch"
+  },
+  {
+    "branch_code": "154",
+    "branch_name": "Taulihawa Branch"
+  },
+  {
+    "branch_code": "155",
+    "branch_name": "Krishnanagar Branch"
+  },
+  {
+    "branch_code": "156",
+    "branch_name": "4 No Jeetpur Branch"
+  },
+  {
+    "branch_code": "157",
+    "branch_name": "Tansen Branch"
+  },
+  {
+    "branch_code": "158",
+    "branch_name": "Rampur Branch"
+  },
+  {
+    "branch_code": "159",
+    "branch_name": "Tamghas Branch"
+  },
+  {
+    "branch_code": "160",
+    "branch_name": "Ridi Branch"
+  },
+  {
+    "branch_code": "161",
+    "branch_name": "Sandhikharka Branch"
+  },
+  {
+    "branch_code": "162",
+    "branch_name": "Thada Branch"
+  },
+  {
+    "branch_code": "163",
+    "branch_name": "Pokhara Prov Office"
+  },
+  {
+    "branch_code": "164",
+    "branch_name": "Pokhara Branch"
+  },
+  {
+    "branch_code": "165",
+    "branch_name": "Bagar Branch"
+  },
+  {
+    "branch_code": "166",
+    "branch_name": "Gagangauda Branch"
+  },
+  {
+    "branch_code": "167",
+    "branch_name": "Nayabazar Pokhara"
+  },
+  {
+    "branch_code": "168",
+    "branch_name": "Damauli Branch"
+  },
+  {
+    "branch_code": "169",
+    "branch_name": "Khairenitar Branch"
+  },
+  {
+    "branch_code": "170",
+    "branch_name": "Dumre Branch"
+  },
+  {
+    "branch_code": "172",
+    "branch_name": "Galyang Branch"
+  },
+  {
+    "branch_code": "173",
+    "branch_name": "Waling Branch"
+  },
+  {
+    "branch_code": "174",
+    "branch_name": "Syangja Branch"
+  },
+  {
+    "branch_code": "175",
+    "branch_name": "Gorkha Branch"
+  },
+  {
+    "branch_code": "176",
+    "branch_name": "Aarughat Branch"
+  },
+  {
+    "branch_code": "177",
+    "branch_name": "Palungtar Branch"
+  },
+  {
+    "branch_code": "178",
+    "branch_name": "Beshishahar Branch"
+  },
+  {
+    "branch_code": "179",
+    "branch_name": "Bhorletar Branch"
+  },
+  {
+    "branch_code": "180",
+    "branch_name": "Bhotewadar Branch"
+  },
+  {
+    "branch_code": "181",
+    "branch_name": "Manag Branch"
+  },
+  {
+    "branch_code": "182",
+    "branch_name": "Baglung Branch"
+  },
+  {
+    "branch_code": "183",
+    "branch_name": "Hatiya Branch"
+  },
+  {
+    "branch_code": "184",
+    "branch_name": "Kusma Branch"
+  },
+  {
+    "branch_code": "185",
+    "branch_name": "Huwas Branch"
+  },
+  {
+    "branch_code": "186",
+    "branch_name": "Beni Branch"
+  },
+  {
+    "branch_code": "188",
+    "branch_name": "Jomsom Branch"
+  },
+  {
+    "branch_code": "189",
+    "branch_name": "Dang Prov Office"
+  },
+  {
+    "branch_code": "190",
+    "branch_name": "Lamahi Branch"
+  },
+  {
+    "branch_code": "191",
+    "branch_name": "Tulsipur Branch"
+  },
+  {
+    "branch_code": "192",
+    "branch_name": "TriMarga Branch"
+  },
+  {
+    "branch_code": "193",
+    "branch_name": "Gadhawa Branch"
+  },
+  {
+    "branch_code": "194",
+    "branch_name": "Ghorahi Branch"
+  },
+  {
+    "branch_code": "195",
+    "branch_name": "Narayanpur Branch"
+  },
+  {
+    "branch_code": "196",
+    "branch_name": "Pyuthan Branch"
+  },
+  {
+    "branch_code": "197",
+    "branch_name": "Rolpa Branch"
+  },
+  {
+    "branch_code": "198",
+    "branch_name": "Salyan Branch"
+  },
+  {
+    "branch_code": "199",
+    "branch_name": "Musikot Branch"
+  },
+  {
+    "branch_code": "201",
+    "branch_name": "Newroad Nepalgunj"
+  },
+  {
+    "branch_code": "202",
+    "branch_name": "Pipari Branch"
+  },
+  {
+    "branch_code": "203",
+    "branch_name": "Dhambojhi Branch"
+  },
+  {
+    "branch_code": "204",
+    "branch_name": "Khajura Branch"
+  },
+  {
+    "branch_code": "205",
+    "branch_name": "Kohalpur Branch"
+  },
+  {
+    "branch_code": "206",
+    "branch_name": "Gulariya Branch"
+  },
+  {
+    "branch_code": "207",
+    "branch_name": "Rajapur Branch"
+  },
+  {
+    "branch_code": "208",
+    "branch_name": "Neulapur Branch"
+  },
+  {
+    "branch_code": "209",
+    "branch_name": "Surkhet Branch"
+  },
+  {
+    "branch_code": "210",
+    "branch_name": "Chhinchu Branch"
+  },
+  {
+    "branch_code": "211",
+    "branch_name": "Jajarkot Branch"
+  },
+  {
+    "branch_code": "212",
+    "branch_name": "Dailekh Branch"
+  },
+  {
+    "branch_code": "213",
+    "branch_name": "Jumla Branch"
+  },
+  {
+    "branch_code": "214",
+    "branch_name": "Dolpa Branch"
+  },
+  {
+    "branch_code": "215",
+    "branch_name": "Kalikot Branch"
+  },
+  {
+    "branch_code": "216",
+    "branch_name": "Mugu Branch"
+  },
+  {
+    "branch_code": "217",
+    "branch_name": "Humla Branch"
+  },
+  {
+    "branch_code": "218",
+    "branch_name": "Dhangadhi Prov Office"
+  },
+  {
+    "branch_code": "219",
+    "branch_name": "Campusroad Dhangadhi"
+  },
+  {
+    "branch_code": "220",
+    "branch_name": "Bhajani Branch"
+  },
+  {
+    "branch_code": "221",
+    "branch_name": "Hasuliya Branch"
+  },
+  {
+    "branch_code": "222",
+    "branch_name": "Tikapur Branch"
+  },
+  {
+    "branch_code": "223",
+    "branch_name": "Sukhkhad Branch"
+  },
+  {
+    "branch_code": "225",
+    "branch_name": "Dhangadhi Branch"
+  },
+  {
+    "branch_code": "226",
+    "branch_name": "Mangalsen Branch"
+  },
+  {
+    "branch_code": "227",
+    "branch_name": "Sanphebagar Branch"
+  },
+  {
+    "branch_code": "228",
+    "branch_name": "Silgadhi Branch"
+  },
+  {
+    "branch_code": "230",
+    "branch_name": "Bajura Branch"
+  },
+  {
+    "branch_code": "231",
+    "branch_name": "Bajhang Branch"
+  },
+  {
+    "branch_code": "232",
+    "branch_name": "Shripur Belauri Branch"
+  },
+  {
+    "branch_code": "234",
+    "branch_name": "Attriya Branch"
+  },
+  {
+    "branch_code": "235",
+    "branch_name": "DodharaChandani Branch"
+  },
+  {
+    "branch_code": "236",
+    "branch_name": "Mahendranagar Branch"
+  },
+  {
+    "branch_code": "237",
+    "branch_name": "Dadeldhura Branch"
+  },
+  {
+    "branch_code": "238",
+    "branch_name": "Baitadi Branch"
+  },
+  {
+    "branch_code": "239",
+    "branch_name": "Patan Branch"
+  },
+  {
+    "branch_code": "240",
+    "branch_name": "Darchula Branch"
+  },
+  {
+    "branch_code": "241",
+    "branch_name": "Golbazar Branch"
+  },
+  {
+    "branch_code": "242",
+    "branch_name": "Gauradaha Branch"
+  },
+  {
+    "branch_code": "243",
+    "branch_name": "Bhingri Branch"
+  },
+  {
+    "branch_code": "244",
+    "branch_name": "Sauraha Branch"
+  },
+  {
+    "branch_code": "245",
+    "branch_name": "Pharsatikar Branch"
+  },
+  {
+    "branch_code": "246",
+    "branch_name": "Jhalari Branch"
+  },
+  {
+    "branch_code": "247",
+    "branch_name": "Chapakot Branch"
+  },
+  {
+    "branch_code": "248",
+    "branch_name": "Chhahare Branch"
+  },
+  {
+    "branch_code": "249",
+    "branch_name": "Lamki Branch"
+  },
+  {
+    "branch_code": "250",
+    "branch_name": "Chuhandada Branch"
+  },
+  {
+    "branch_code": "251",
+    "branch_name": "Rabi Branch"
+  },
+  {
+    "branch_code": "252",
+    "branch_name": "Chisapani Branch"
+  },
+  {
+    "branch_code": "253",
+    "branch_name": "Palung Mainadi Branch"
+  },
+  {
+    "branch_code": "254",
+    "branch_name": "Purkotdaha Branch"
+  },
+  {
+    "branch_code": "255",
+    "branch_name": "Sotang Branch"
+  },
+  {
+    "branch_code": "256",
+    "branch_name": "Dudhakoshi Branch"
+  },
+  {
+    "branch_code": "257",
+    "branch_name": "Ghorakhori Branch"
+  },
+  {
+    "branch_code": "258",
+    "branch_name": "Gandaki Branch"
+  },
+  {
+    "branch_code": "259",
+    "branch_name": "Sukatiya Branch"
+  },
+  {
+    "branch_code": "260",
+    "branch_name": "Kumalgaun Branch"
+  },
+  {
+    "branch_code": "261",
+    "branch_name": "Odanaku Branch"
+  },
+  {
+    "branch_code": "262",
+    "branch_name": "Kushe Branch"
+  },
+  {
+    "branch_code": "263",
+    "branch_name": "Majkot Branch"
+  },
+  {
+    "branch_code": "264",
+    "branch_name": "Limsa Branch"
+  },
+  {
+    "branch_code": "265",
+    "branch_name": "Bungal Branch"
+  },
+  {
+    "branch_code": "266",
+    "branch_name": "Sigas Branch"
+  },
+  {
+    "branch_code": "267",
+    "branch_name": "Kohalbi Branch"
+  },
+  {
+    "branch_code": "268",
+    "branch_name": "Malepatan Pokhara"
+  },
+  {
+    "branch_code": "269",
+    "branch_name": "Mahendranagar Dhanusa"
+  },
+  {
+    "branch_code": "270",
+    "branch_name": "Hariwan Branch"
+  },
+  {
+    "branch_code": "271",
+    "branch_name": "Jorayal Branch"
+  },
+  {
+    "branch_code": "272",
+    "branch_name": "Jogbudha Branch"
+  },
+  {
+    "branch_code": "273",
+    "branch_name": "Thankot Branch"
+  },
+  {
+    "branch_code": "274",
+    "branch_name": "Chandrauta Branch"
+  },
+  {
+    "branch_code": "275",
+    "branch_name": "Pakadi Branch"
+  },
+  {
+    "branch_code": "276",
+    "branch_name": "PaniTanki Branch"
+  },
+  {
+    "branch_code": "277",
+    "branch_name": "Shripur Birgunj Branch"
+  },
+  {
+    "branch_code": "278",
+    "branch_name": "Surkhet Prov Office"
+  },
+  {
+    "branch_code": "279",
+    "branch_name": "Dharke Branch"
+  },
+  {
+    "branch_code": "280",
+    "branch_name": "Chhatiwan Branch"
+  },
+  {
+    "branch_code": "281",
+    "branch_name": "Dullu Branch"
+  },
+  {
+    "branch_code": "282",
+    "branch_name": "Mulpani Branch"
+  },
+  {
+    "branch_code": "283",
+    "branch_name": "Dakaha Branch"
+  },
+  {
+    "branch_code": "284",
+    "branch_name": "Rukumkot Branch"
+  },
+  {
+    "branch_code": "285",
+    "branch_name": "Rakamkarnali Branch"
+  },
+  {
+    "branch_code": "287",
+    "branch_name": "Ratuwamai Branch"
+  },
+  {
+    "branch_code": "288",
+    "branch_name": "Bijuwar Branch"
+  },
+  {
+    "branch_code": "289",
+    "branch_name": "Dillichaur Branch"
+  },
+  {
+    "branch_code": "290",
+    "branch_name": "Chauthe Pokhara"
+  },
+  {
+    "branch_code": "291",
+    "branch_name": "Maurighat Branch"
+  },
+  {
+    "branch_code": "292",
+    "branch_name": "Gitanagar Branch"
+  },
+  {
+    "branch_code": "293",
+    "branch_name": "Bhadrakali Branch"
+  },
+  {
+    "branch_code": "294",
+    "branch_name": "Kholesimal Branch"
+  },
+  {
+    "branch_code": "295",
+    "branch_name": "Arichowk Branch"
+  }
+]

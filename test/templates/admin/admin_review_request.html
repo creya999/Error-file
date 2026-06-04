@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% block title %}Review {{ req.request_no }} – Admin{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-pencil-square me-2"></i>Review Card Request</h4>
+  <a href="{{ url_for('admin.all_requests') }}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i>Back to All Requests
+  </a>
+</div>
+
+<div class="row g-4">
+
+  <!-- ── Request Details ──────────────────────────────────────────────────── -->
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-file-earmark-text me-2 text-success"></i>Request Information
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-6">
+            <div class="text-muted small">Request Number</div>
+            <div class="fw-bold text-success fs-5">{{ req.request_no }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Current Status</div>
+            {% if req.status == 'Pending' %}
+              <span class="badge badge-pending fs-6 px-3 py-2"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+            {% elif req.status == 'Approved' %}
+              <span class="badge badge-approved fs-6 px-3 py-2"><i class="bi bi-check-circle me-1"></i>Approved</span>
+            {% elif req.status == 'Dispatched' %}
+              <span class="badge badge-dispatched fs-6 px-3 py-2"><i class="bi bi-truck me-1"></i>Dispatched</span>
+            {% elif req.status == 'Received' %}
+              <span class="badge badge-received fs-6 px-3 py-2"><i class="bi bi-patch-check me-1"></i>Received</span>
+            {% else %}
+              <span class="badge badge-rejected fs-6 px-3 py-2"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+            {% endif %}
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Branch</div>
+            <div class="fw-semibold">{{ req.branch_name }}</div>
+            <div class="text-muted small">{{ req.branch_code }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Requested By</div>
+            <div class="fw-semibold">{{ req.staff_id }}</div>
+            <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ req.staff_phone }}</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Cards Requested</div>
+            <div class="fw-bold text-success fs-3">{{ req.quantity }}</div>
+            <div class="text-muted small">Blank Instant Cards</div>
+          </div>
+
+          <div class="col-6">
+            <div class="text-muted small">Requested At</div>
+            <div class="fw-semibold">{{ req.requested_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          </div>
+
+          {% if req.remarks %}
+          <div class="col-12">
+            <div class="text-muted small">Branch Remarks</div>
+            <div class="border rounded p-2 bg-light">{{ req.remarks }}</div>
+          </div>
+          {% endif %}
+
+          <!-- ── Card Sales Tracking (visible to admin once branch enters data) ── -->
+          {% if req.status == 'Received' %}
+          <div class="col-12">
+            <hr>
+            <div class="fw-semibold mb-2 text-info">
+              <i class="bi bi-bar-chart-line me-1"></i>Card Sales Tracking (Branch Entry)
+            </div>
+            <div class="row g-2 text-center">
+              <div class="col-4">
+                <div class="border rounded p-2">
+                  <div class="text-muted small">Approved</div>
+                  <div class="fw-bold fs-4 text-success">{{ req.approved_quantity }}</div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="border rounded p-2">
+                  <div class="text-muted small">Sold</div>
+                  {% if req.cards_sold is not none %}
+                    <div class="fw-bold fs-4 text-warning">{{ req.cards_sold }}</div>
+                  {% else %}
+                    <div class="fw-bold fs-4 text-muted">—</div>
+                    <div class="text-muted" style="font-size:0.7rem;">Pending entry</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="border rounded p-2">
+                  <div class="text-muted small">Remaining</div>
+                  {% if req.cards_remaining is not none %}
+                    <div class="fw-bold fs-4 {% if req.cards_remaining == 0 %}text-danger{% else %}text-primary{% endif %}">
+                      {{ req.cards_remaining }}
+                    </div>
+                  {% else %}
+                    <div class="fw-bold fs-4 text-muted">—</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Action Panel ────────────────────────────────────────────────────── -->
+  <div class="col-md-5">
+
+    {% if req.status == 'Pending' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-check2-square me-2 text-success"></i>Take Action
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Approved Quantity</label>
+            <input type="number" name="approved_quantity" class="form-control"
+                   value="{{ req.quantity }}" min="1" max="{{ req.quantity }}" required>
+            <div class="form-text text-muted">
+              Branch requested <strong>{{ req.quantity }}</strong> cards.
+              You can approve a lower amount if needed.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Admin Remarks (optional)</label>
+            <textarea name="admin_remarks" class="form-control" rows="3"
+                      placeholder="Add notes, reason for partial approval..."></textarea>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" name="action" value="Approved" class="btn btn-success py-2">
+              <i class="bi bi-check-circle me-1"></i>Approve Request
+            </button>
+            <button type="submit" name="action" value="Rejected" class="btn btn-danger py-2"
+                    onclick="return confirm('Reject this request?')">
+              <i class="bi bi-x-circle me-1"></i>Reject Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% elif req.status == 'Approved' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-info-circle me-2 text-success"></i>Review Information
+      </div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="text-muted small">Reviewed By</div>
+          <div class="fw-semibold">{{ req.reviewed_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Reviewed At</div>
+          <div class="fw-semibold">{{ req.reviewed_at.strftime('%Y-%m-%d %H:%M') if req.reviewed_at else '—' }}</div>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted small">Approved Quantity</div>
+          <div class="fw-bold text-success fs-5">{{ req.approved_quantity }}</div>
+          {% if req.approved_quantity != req.quantity %}
+          <div class="text-muted small">Requested: {{ req.quantity }} — partial approval</div>
+          {% endif %}
+        </div>
+        {% if req.admin_remarks %}
+        <div class="mb-3">
+          <div class="text-muted small">Admin Remarks</div>
+          <div class="border rounded p-2 bg-light">{{ req.admin_remarks }}</div>
+        </div>
+        {% endif %}
+        <hr>
+        <p class="fw-semibold mb-2"><i class="bi bi-truck me-1 text-primary"></i>Ready to dispatch?</p>
+        <form method="POST" action="{{ url_for('admin.dispatch_request', req_id=req.id) }}">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Dispatch Remarks (optional)</label>
+            <textarea name="dispatch_remarks" class="form-control form-control-sm" rows="2"
+                      placeholder="Courier name, tracking number, etc."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100"
+                  onclick="return confirm('Mark this request as Dispatched?')">
+            <i class="bi bi-truck me-1"></i>Mark as Dispatched
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% elif req.status == 'Dispatched' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-truck me-2 text-primary"></i>Dispatch Information
+      </div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="text-muted small">Approved Quantity</div>
+          <div class="fw-bold text-success fs-5">{{ req.approved_quantity }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Dispatched By</div>
+          <div class="fw-semibold">{{ req.dispatched_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Dispatched At</div>
+          <div class="fw-semibold">{{ req.dispatched_at.strftime('%Y-%m-%d %H:%M') if req.dispatched_at else '—' }}</div>
+        </div>
+        {% if req.dispatch_remarks %}
+        <div class="mb-2">
+          <div class="text-muted small">Dispatch Remarks</div>
+          <div class="border rounded p-2 bg-light">{{ req.dispatch_remarks }}</div>
+        </div>
+        {% endif %}
+        <div class="alert alert-warning mt-3 small mb-0">
+          <i class="bi bi-hourglass-split me-1"></i>Waiting for branch to confirm receipt.
+        </div>
+      </div>
+    </div>
+
+    {% elif req.status == 'Received' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-patch-check me-2 text-success"></i>Delivery Confirmed
+      </div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="text-muted small">Approved Quantity</div>
+          <div class="fw-bold text-success fs-5">{{ req.approved_quantity }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Dispatched By</div>
+          <div class="fw-semibold">{{ req.dispatched_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Dispatched At</div>
+          <div class="fw-semibold">{{ req.dispatched_at.strftime('%Y-%m-%d %H:%M') if req.dispatched_at else '—' }}</div>
+        </div>
+        {% if req.dispatch_remarks %}
+        <div class="mb-2">
+          <div class="text-muted small">Dispatch Remarks</div>
+          <div class="border rounded p-2 bg-light">{{ req.dispatch_remarks }}</div>
+        </div>
+        {% endif %}
+        <hr>
+        <div class="mb-2">
+          <div class="text-muted small">Received By</div>
+          <div class="fw-semibold">{{ req.received_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Received At</div>
+          <div class="fw-semibold">{{ req.received_at.strftime('%Y-%m-%d %H:%M') if req.received_at else '—' }}</div>
+        </div>
+        <hr>
+        <!-- Sales summary in the action panel -->
+        <div class="fw-semibold mb-2 small text-info">
+          <i class="bi bi-bar-chart-line me-1"></i>Sales Summary
+        </div>
+        <table class="table table-sm mb-0">
+          <tr>
+            <td class="text-muted small">Cards Sold</td>
+            <td class="fw-semibold">
+              {% if req.cards_sold is not none %}
+                <span class="badge bg-warning text-dark">{{ req.cards_sold }}</span>
+              {% else %}
+                <span class="text-muted">Not entered yet</span>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted small">Cards Remaining</td>
+            <td class="fw-semibold">
+              {% if req.cards_remaining is not none %}
+                <span class="badge {% if req.cards_remaining == 0 %}bg-danger{% else %}bg-primary{% endif %}">
+                  {{ req.cards_remaining }}
+                </span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+        <div class="alert alert-success mt-3 small mb-0">
+          <i class="bi bi-check-circle me-1"></i>Branch has confirmed receipt.
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-info-circle me-2 text-success"></i>Review Information
+      </div>
+      <div class="card-body">
+        <div class="mb-2">
+          <div class="text-muted small">Reviewed By</div>
+          <div class="fw-semibold">{{ req.reviewed_by or '—' }}</div>
+        </div>
+        <div class="mb-2">
+          <div class="text-muted small">Reviewed At</div>
+          <div class="fw-semibold">{{ req.reviewed_at.strftime('%Y-%m-%d %H:%M') if req.reviewed_at else '—' }}</div>
+        </div>
+        {% if req.admin_remarks %}
+        <div>
+          <div class="text-muted small">Admin Remarks</div>
+          <div class="border rounded p-2 bg-light">{{ req.admin_remarks }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

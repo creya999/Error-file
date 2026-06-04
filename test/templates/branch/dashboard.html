@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Branch Dashboard – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-house me-2"></i>Branch Dashboard</h4>
+  <a href="{{ url_for('branch.new_request') }}" class="btn btn-adbn btn-sm">
+    <i class="bi bi-plus-circle me-1"></i>New Card Request
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-primary bg-opacity-10 text-primary"><i class="bi bi-layers"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.total }}</div>
+          <div class="text-muted small">Total Requests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-warning bg-opacity-10 text-warning"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.pending }}</div>
+          <div class="text-muted small">Pending</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.approved }}</div>
+          <div class="text-muted small">Approved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-danger bg-opacity-10 text-danger"><i class="bi bi-x-circle"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.rejected }}</div>
+          <div class="text-muted small">Rejected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Requests Table -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white fw-semibold">
+    <i class="bi bi-card-list me-2 text-success"></i>My Card Requests
+  </div>
+  <div class="card-body p-0">
+    {% if requests %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Request No</th>
+            <th>Qty (Req / Approved)</th>
+            <th>Remarks</th>
+            <th>Requested At</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+            <td><span class="fw-semibold">{{ r.request_no }}</span></td>
+            <td>
+              <span class="badge bg-secondary">{{ r.quantity }} cards</span>
+              {% if r.approved_quantity is not none %}
+                {% if r.approved_quantity < r.quantity %}
+                  / <span class="badge bg-warning text-dark">{{ r.approved_quantity }} approved</span>
+                {% else %}
+                  / <span class="badge bg-success">{{ r.approved_quantity }} approved</span>
+                {% endif %}
+              {% endif %}
+            </td>
+            <td class="text-muted small">{{ r.remarks or '—' }}</td>
+            <td class="small">{{ r.requested_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>
+              {% if r.status == 'Pending' %}
+                <span class="badge badge-pending px-2 py-1"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+              {% elif r.status == 'Approved' %}
+                <span class="badge badge-approved px-2 py-1"><i class="bi bi-check-circle me-1"></i>Approved</span>
+              {% elif r.status == 'Dispatched' %}
+                <span class="badge badge-dispatched px-2 py-1"><i class="bi bi-truck me-1"></i>Dispatched</span>
+              {% elif r.status == 'Received' %}
+                <span class="badge badge-received px-2 py-1"><i class="bi bi-patch-check me-1"></i>Received</span>
+              {% else %}
+                <span class="badge badge-rejected px-2 py-1"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('branch.view_request', req_id=r.id) }}"
+                 class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No card requests yet.<br>
+        <a href="{{ url_for('branch.new_request') }}">Submit your first request</a>
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

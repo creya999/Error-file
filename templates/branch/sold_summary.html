@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Update Sold – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-pencil-square me-2"></i>Update Cards Sold</h4>
+  <span class="text-muted small">{{ requests|length }} received request(s)</span>
+</div>
+
+{% if requests %}
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white fw-semibold">
+    <i class="bi bi-patch-check me-2 text-success"></i>Received Requests — Enter Sales
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Serial No.</th>
+            <th>Request No</th>
+            <th>Approved</th>
+            <th>Total Sold</th>
+            <th>Remaining</th>
+            <th>Progress</th>
+            <th>Received On</th>
+            <th>Last Sale Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+
+            <td>
+              <div class="fw-semibold text-success">{{ r.request_no }}</div>
+              <div class="text-muted small">{{ r.branch_name }}</div>
+            </td>
+
+            <td>
+              <span class="fw-semibold text-success fs-6">{{ r.approved_quantity }}</span>
+              <div class="text-muted small">cards</div>
+            </td>
+
+            <td>
+              {% if r.cards_sold is not none %}
+                <span class="fw-semibold text-warning fs-6">{{ r.cards_sold }}</span>
+                <div class="text-muted small">sold</div>
+              {% else %}
+                <span class="text-muted small fst-italic">Not entered</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if r.cards_remaining is not none %}
+                <span class="fw-semibold fs-6 {% if r.cards_remaining == 0 %}text-danger{% else %}text-primary{% endif %}">
+                  {{ r.cards_remaining }}
+                </span>
+                <div class="text-muted small">remaining</div>
+              {% else %}
+                <span class="fw-semibold text-primary fs-6">{{ r.approved_quantity }}</span>
+                <div class="text-muted small">remaining</div>
+              {% endif %}
+            </td>
+
+            <td style="min-width:160px">
+              {% if r.approved_quantity %}
+                {% set sold = r.cards_sold or 0 %}
+                {% set pct = ((sold / r.approved_quantity) * 100) | int %}
+                <div class="progress mb-1" style="height:8px; border-radius:4px;">
+                  <div class="progress-bar {% if pct == 100 %}bg-danger{% elif pct >= 70 %}bg-warning{% else %}bg-success{% endif %}"
+                       role="progressbar" style="width:{{ pct }}%"></div>
+                </div>
+                <div class="text-muted small">{{ pct }}% issued</div>
+              {% endif %}
+            </td>
+
+            <td class="small">
+              <div>{{ r.received_at.strftime('%Y-%m-%d') if r.received_at else '—' }}</div>
+              <div class="text-muted">{{ r.received_at.strftime('%H:%M') if r.received_at else '' }}</div>
+            </td>
+
+            <td class="small">
+  {% if r.sales %}
+    {% set last_sale = r.sales | sort(attribute='sold_date') | last %}
+    <span class="badge bg-info text-dark">{{ last_sale.sold_date.strftime('%Y-%m-%d') }}</span>
+    <div class="text-muted" style="font-size:0.75rem;">{{ r.sales|length }} entry(s)</div>
+  {% else %}
+    <span class="text-muted small">No sales yet</span>
+  {% endif %}
+</td>
+
+            <td>
+  <div class="d-flex flex-column gap-1">
+    <a href="{{ url_for('branch.view_request', req_id=r.id) }}"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-eye me-1"></i>View
+    </a>
+    <a href="{{ url_for('branch.update_sold', req_id=r.id) }}"
+       class="btn btn-sm btn-adbn">
+      <i class="bi bi-pencil-square me-1"></i>Update Sold
+    </a>
+  </div>
+</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% else %}
+<div class="card border-0 shadow-sm">
+  <div class="card-body text-center py-5 text-muted">
+    <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+    <p class="mb-1 fw-semibold">No received requests found.</p>
+    <p class="small">The Update Sold option appears once a dispatched request is marked as Received.</p>
+    <a href="{{ url_for('branch.dashboard') }}" class="btn btn-sm btn-outline-secondary mt-2">
+      <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}User Management – ADBL Admin{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-people me-2"></i>User Management</h4>
+  <a href="{{ url_for('admin.new_user') }}" class="btn btn-adbn btn-sm">
+    <i class="bi bi-person-plus me-1"></i>Add New User
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white small text-muted">
+    Total Users: <strong>{{ users|length }}</strong>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Staff ID</th>
+            <th>Full Name</th>
+            <th>Branch</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+            <td><span class="fw-semibold">{{ u.staff_id }}</span></td>
+            <td>{{ u.full_name }}</td>
+            <td>{{ u.branch_name }}<br><small class="text-muted">{{ u.branch_code }}</small></td>
+            <td>{{ u.phone }}</td>
+            <td>
+              {% if u.role == 'admin' %}
+                <span class="badge bg-danger">Admin</span>
+              {% else %}
+                <span class="badge bg-secondary">Branch</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge badge-approved"><i class="bi bi-check-circle me-1"></i>Active</span>
+              {% else %}
+                <span class="badge badge-rejected"><i class="bi bi-x-circle me-1"></i>Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <!-- Toggle active -->
+              <form method="POST" action="{{ url_for('admin.toggle_user', user_id=u.id) }}"
+                    class="d-inline"
+                    onsubmit="return confirm('Toggle status for {{ u.full_name }}?')">
+                <button class="btn btn-sm {% if u.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                  {% if u.is_active %}
+                    <i class="bi bi-pause-circle"></i>
+                  {% else %}
+                    <i class="bi bi-play-circle"></i>
+                  {% endif %}
+                </button>
+              </form>
+
+              <!-- Reset password modal trigger -->
+              <button class="btn btn-sm btn-outline-secondary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#resetModal"
+                      data-uid="{{ u.id }}"
+                      data-name="{{ u.full_name }}">
+                <i class="bi bi-key"></i>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-key me-2"></i>Reset Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" id="resetForm">
+        <div class="modal-body">
+          <p class="text-muted small mb-3">Resetting password for: <strong id="resetName"></strong></p>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">New Password</label>
+            <div class="input-group">
+              <input type="password" name="new_password" id="resetPwd" class="form-control"
+                     placeholder="Min. 6 characters" required minlength="6"/>
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleResetVis('resetPwd','eyeReset1')">
+                <i class="bi bi-eye" id="eyeReset1"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-1">
+            <label class="form-label fw-semibold">Confirm Password</label>
+            <div class="input-group">
+              <input type="password" name="confirm_password" id="resetConfirm" class="form-control"
+                     placeholder="Re-type new password" required minlength="6"/>
+              <button class="btn btn-outline-secondary" type="button" onclick="toggleResetVis('resetConfirm','eyeReset2')">
+                <i class="bi bi-eye" id="eyeReset2"></i>
+              </button>
+            </div>
+            <div id="resetMatchMsg" class="form-text"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-adbn" id="resetSubmitBtn">Reset Password</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const resetModal = document.getElementById('resetModal');
+resetModal.addEventListener('show.bs.modal', function(e){
+  const btn  = e.relatedTarget;
+  document.getElementById('resetName').textContent = btn.getAttribute('data-name');
+  document.getElementById('resetForm').action = `/admin/users/${btn.getAttribute('data-uid')}/reset-password`;
+  document.getElementById('resetPwd').value = '';
+  document.getElementById('resetConfirm').value = '';
+  document.getElementById('resetMatchMsg').textContent = '';
+  document.getElementById('resetSubmitBtn').disabled = false;
+});
+
+function toggleResetVis(inputId, iconId){
+  const input = document.getElementById(inputId);
+  const icon  = document.getElementById(iconId);
+  if(input.type === 'password'){ input.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+  else { input.type = 'password'; icon.className = 'bi bi-eye'; }
+}
+
+function checkResetMatch(){
+  const p1  = document.getElementById('resetPwd').value;
+  const p2  = document.getElementById('resetConfirm').value;
+  const msg = document.getElementById('resetMatchMsg');
+  const btn = document.getElementById('resetSubmitBtn');
+  if(p2.length === 0){ msg.textContent = ''; btn.disabled = false; return; }
+  if(p1 === p2){
+    msg.textContent = '✓ Passwords match';
+    msg.className = 'form-text text-success fw-semibold';
+    btn.disabled = false;
+  } else {
+    msg.textContent = '✗ Passwords do not match';
+    msg.className = 'form-text text-danger fw-semibold';
+    btn.disabled = true;
+  }
+}
+document.getElementById('resetPwd').addEventListener('input', checkResetMatch);
+document.getElementById('resetConfirm').addEventListener('input', checkResetMatch);
+</script>
+{% endblock %}

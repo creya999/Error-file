@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block title %}Update Cards Sold – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-pencil-square me-2"></i>Update Cards Sold</h4>
+  <a href="{{ url_for('branch.sold_summary') }}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i>Back
+  </a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold text-success">
+        <i class="bi bi-credit-card-2-front me-2"></i>{{ req.request_no }} — Card Sales Entry
+      </div>
+      <div class="card-body p-4">
+
+        <!-- Request Summary -->
+        <div class="alert alert-success py-2 mb-4 small">
+          <i class="bi bi-bank me-1"></i>
+          <strong>Branch:</strong> {{ req.branch_name }} ({{ req.branch_code }})
+          &nbsp;|&nbsp;
+          <strong>Approved Cards:</strong> {{ req.approved_quantity }}
+        </div>
+
+        <!-- Current stock status -->
+        <div class="row g-3 mb-4">
+          <div class="col-4">
+            <div class="border rounded p-3 text-center">
+              <div class="text-muted small mb-1">Approved</div>
+              <div class="fw-bold fs-4 text-success">{{ req.approved_quantity }}</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-3 text-center">
+              <div class="text-muted small mb-1">Total Sold</div>
+              <div class="fw-bold fs-4 text-warning">{{ req.cards_sold or 0 }}</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-3 text-center">
+              <div class="text-muted small mb-1">Remaining</div>
+              <div class="fw-bold fs-4 {% if (req.cards_remaining or req.approved_quantity) == 0 %}text-danger{% else %}text-primary{% endif %}">
+                {{ req.cards_remaining if req.cards_remaining is not none else req.approved_quantity }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entry Form -->
+        <form method="POST">
+          <div class="mb-3">
+            <label for="cards_sold" class="form-label fw-semibold">
+              Cards Sold This Time <span class="text-danger">*</span>
+            </label>
+            <input type="number"
+                   class="form-control form-control-lg"
+                   id="cards_sold"
+                   name="cards_sold"
+                   min="1"
+                   max="{{ req.cards_remaining if req.cards_remaining is not none else req.approved_quantity }}"
+                   value=""
+                   placeholder="Enter number of cards sold today"
+                   required
+                   oninput="calcRemaining(this.value)">
+            <div class="form-text">
+              Enter only <strong>new cards sold since last update</strong>.
+              Current remaining stock:
+              <strong>{{ req.cards_remaining if req.cards_remaining is not none else req.approved_quantity }}</strong>
+            </div>
+          </div>
+
+<!-- Date of Sale -->
+<div class="mb-3">
+  <label for="sold_date" class="form-label fw-semibold">
+    Date of Sale <span class="text-danger">*</span>
+  </label>
+  <input type="date"
+         class="form-control"
+         id="sold_date"
+         name="sold_date"
+         value="{{ today }}"
+         max="{{ today }}"
+         required>
+  <div class="form-text">Select the date on which cards were sold.</div>
+</div>
+
+
+
+
+
+
+
+
+          <!-- Live preview -->
+          <div class="border rounded p-3 mb-4 bg-light">
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="text-muted small">Selling Now</div>
+                <div class="fw-bold fs-5 text-success" id="previewNew">—</div>
+              </div>
+              <div class="col-4">
+                <div class="text-muted small">Total Sold After</div>
+                <div class="fw-bold fs-5 text-warning" id="previewSold">—</div>
+              </div>
+              <div class="col-4">
+                <div class="text-muted small">Remaining After</div>
+                <div class="fw-bold fs-5 text-primary" id="previewRemaining">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-adbn px-4">
+              <i class="bi bi-save me-1"></i>Save
+            </button>
+            <a href="{{ url_for('branch.sold_summary') }}"
+               class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const currentRemaining = {{ req.cards_remaining if req.cards_remaining is not none else req.approved_quantity }};
+  const previousSold     = {{ req.cards_sold or 0 }};
+
+  function calcRemaining(val) {
+    const newSold = parseInt(val, 10);
+    if (isNaN(newSold) || val === '') {
+      document.getElementById('previewNew').textContent       = '—';
+      document.getElementById('previewSold').textContent      = '—';
+      document.getElementById('previewRemaining').textContent = '—';
+      return;
+    }
+    const afterRemaining = currentRemaining - newSold;
+    const totalSold      = previousSold + newSold;
+    document.getElementById('previewNew').textContent       = newSold;
+    document.getElementById('previewSold').textContent      = totalSold;
+    document.getElementById('previewRemaining').textContent = afterRemaining >= 0 ? afterRemaining : '⚠ Exceeds stock';
+  }
+</script>
+{% endblock %}
+<!-- Sale History -->
+{% if req.sales %}
+<div class="mt-4">
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold text-success">
+      <i class="bi bi-clock-history me-2"></i>Sale History
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-sm table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Date of Sale</th>
+            <th>Cards Sold</th>
+            <th>Recorded By</th>
+            <th>Recorded At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sale in req.sales | sort(attribute='sold_date') %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+            <td><span class="badge bg-info text-dark">{{ sale.sold_date.strftime('%Y-%m-%d') }}</span></td>
+            <td><span class="badge bg-warning text-dark">{{ sale.cards_sold }}</span></td>
+            <td class="small">{{ sale.recorded_by or '—' }}</td>
+            <td class="small text-muted">{{ sale.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot class="table-light">
+          <tr>
+            <td colspan="2" class="fw-semibold text-end">Total Sold:</td>
+            <td><span class="badge bg-danger">{{ req.cards_sold }}</span></td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}

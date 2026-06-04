@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}ADBL Instant Card System{% endblock %}</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --adbn-green:  #1a6b3c;
+      --adbn-green2: #145530;
+      --adbn-light:  #e8f5e9;
+      --adbn-gold:   #c8a327;
+    }
+    body { background:#f4f6f8; font-family:'Segoe UI',sans-serif; }
+
+    /* ── Navbar ── */
+    .navbar-adbn { background: var(--adbn-green); }
+    .navbar-adbn .navbar-brand img { height:40px; }
+    .navbar-adbn .navbar-brand span { color:#fff; font-weight:700; font-size:1.1rem; }
+    .navbar-adbn .nav-link { color:rgba(255,255,255,.85)!important; }
+    .navbar-adbn .nav-link:hover,
+    .navbar-adbn .nav-link.active { color:#fff!important; text-decoration:underline; }
+    .navbar-adbn .dropdown-menu { background: var(--adbn-green2); border:none; }
+    .navbar-adbn .dropdown-item { color:#fff; }
+    .navbar-adbn .dropdown-item:hover { background: rgba(255,255,255,.15); }
+
+    
+    /* ── Sidebar (admin) ── */
+    .sidebar {
+      min-height: calc(100vh - 56px);
+      background: var(--adbn-green);
+      width: 200px; min-width:200px;
+    }
+    .sidebar .nav-link { color:rgba(255,255,255,.8); padding:.4rem .9rem; border-radius:6px; margin:1px 4px; font-size:.85rem; }
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active { background:rgba(255,255,255,.18); color:#fff; }
+    .sidebar .nav-link i { margin-right:5px; }
+    .sidebar-header { color: var(--adbn-gold); font-size:.68rem; font-weight:700;
+                       letter-spacing:.07em; padding:.5rem 1rem .2rem; text-transform:uppercase; }
+
+    /* ── Cards ── */
+    .stat-card { border:none; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .stat-card .icon-box { width:52px; height:52px; border-radius:10px;
+                           display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+
+    /* ── Page header ── */
+    
+.page-header {
+  background: #fff;
+  border-bottom: 3px solid var(--adbn-green);
+  padding: 1.5rem 2rem;   /* expanded padding */
+  margin-bottom: 2rem;    /* more breathing space below */
+  border-radius: 0 0 10px 10px; /* slightly larger rounding */
+}
+
+.page-header h4 {
+  color: var(--adbn-green);
+  margin: 0;
+  font-size: 1.4rem;      /* larger font size */
+  font-weight: 700;       /* bold for emphasis */
+  letter-spacing: .03em;  /* subtle spacing for readability */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* ── Badge status ── */
+    .badge-pending    { background:#fff3cd; color:#856404; }
+    .badge-approved   { background:#d1e7dd; color:#0a3622; }
+    .badge-rejected   { background:#f8d7da; color:#842029; }
+    .badge-dispatched { background:#cfe2ff; color:#084298; }
+    .badge-received   { background:#d1e7dd; color:#0a3622; font-weight:700; }
+
+    /* ── Table ── */
+    .table thead th { background: var(--adbn-green); color:#fff; border:none; font-size:.85rem; }
+    .table tbody tr:hover { background: var(--adbn-light); }
+
+    /* ── Btn primary ── */
+    .btn-adbn { background: var(--adbn-green); color:#fff; border:none; }
+    .btn-adbn:hover { background: var(--adbn-green2); color:#fff; }
+
+    /* ── Login page ── */
+    .login-box { max-width:440px; margin:60px auto; }
+    .login-logo { text-align:center; margin-bottom:1.5rem; }
+    .login-logo img { height:80px; }
+    .login-card { border:none; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.12); }
+    .login-header { background: var(--adbn-green); color:#fff; border-radius:16px 16px 0 0; padding:1.4rem; text-align:center; }
+    .login-header h5 { margin:0; font-weight:700; letter-spacing:.03em; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<!-- ── Navbar ─────────────────────────────────────────────── -->
+<nav class="navbar navbar-expand-lg navbar-adbn py-1">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('auth.index') }}">
+      <img src="{{ url_for('static', filename='adbl.jpeg') }}" alt="ADBL" style="height:38px;object-fit:contain;border-radius:4px;"/>
+      <span>ADBL &mdash; Instant Card System</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item me-2">
+          <span class="text-white-50 small">
+            <i class="bi bi-person-circle me-1"></i>{{ current_user.full_name }}
+            <span class="badge bg-warning text-dark ms-1">{{ current_user.role|capitalize }}</span>
+          </span>
+        </li>
+        {% if current_user.role == 'admin' and received_count > 0 %}
+        <li class="nav-item me-3">
+          <a class="nav-link position-relative d-inline-block px-1"
+             href="{{ url_for('admin.all_requests') }}?status=Received"
+             title="{{ received_count }} request(s) marked as received">
+            <i class="bi bi-bell-fill text-warning fs-5"></i>
+            <span class="position-absolute bg-danger text-white rounded-pill"
+                  style="font-size:.6rem;min-width:16px;height:16px;line-height:16px;
+                         text-align:center;top:-4px;left:14px;padding:0 3px;">
+              {{ received_count }}
+            </span>
+          </a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.change_password') }}">
+            <i class="bi bi-shield-lock me-1"></i>Change Password
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth.logout') }}">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Layout ─────────────────────────────────────────────── -->
+<div class="d-flex" style="min-height:calc(100vh - 56px)">
+
+  {% if current_user.role == 'admin' %}
+  <!-- Admin sidebar -->
+  <div class="sidebar d-flex flex-column pt-2">
+    <div class="sidebar-header">Main Menu</div>
+    <nav class="nav flex-column">
+      <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
+         href="{{ url_for('admin.dashboard') }}">
+        <i class="bi bi-speedometer2"></i>Dashboard
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.all_requests' %}active{% endif %}"
+         href="{{ url_for('admin.all_requests') }}">
+        <i class="bi bi-card-list"></i>All Requests
+      </a>
+      <a class="nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}"
+         href="{{ url_for('admin.users') }}">
+        <i class="bi bi-people"></i>Users
+      </a>
+    </nav>
+    <div class="sidebar-header mt-3">Export</div>
+    <nav class="nav flex-column">
+      <a class="nav-link" href="{{ url_for('admin.export_pdf', status='All') }}" target="_blank">
+        <i class="bi bi-file-earmark-pdf"></i>PDF (All)
+      </a>
+      <a class="nav-link" href="{{ url_for('admin.export_excel', status='All') }}" target="_blank">
+        <i class="bi bi-file-earmark-excel"></i>Excel (All)
+      </a>
+    </nav>
+  </div>
+
+  {% elif current_user.role == 'checker' %}
+  <!-- Checker sidebar -->
+  <div class="sidebar d-flex flex-column pt-2">
+    <div class="sidebar-header">Checker Menu</div>
+    <nav class="nav flex-column">
+      <a class="nav-link {% if request.endpoint == 'checker.dashboard' %}active{% endif %}"
+         href="{{ url_for('checker.dashboard') }}">
+        <i class="bi bi-house"></i>My Dashboard
+      </a>
+      <a class="nav-link {% if request.endpoint == 'auth.change_password' %}active{% endif %}"
+         href="{{ url_for('auth.change_password') }}">
+        <i class="bi bi-shield-lock"></i>Change Password
+      </a>
+    </nav>
+    <div class="mt-auto px-2 pb-2">
+      <div class="bg-success bg-opacity-25 rounded p-2 text-white" style="font-size:.75rem;">
+        <i class="bi bi-bank me-1"></i>{{ current_user.branch_name }}<br>
+        <i class="bi bi-tag me-1"></i>{{ current_user.branch_code }}
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <!-- Maker sidebar -->
+  <div class="sidebar d-flex flex-column pt-2">
+    <div class="sidebar-header">Maker Menu</div>
+    <nav class="nav flex-column">
+      <a class="nav-link {% if request.endpoint == 'branch.dashboard' %}active{% endif %}"
+         href="{{ url_for('branch.dashboard') }}">
+        <i class="bi bi-house"></i>My Dashboard
+      </a>
+      <a class="nav-link {% if request.endpoint == 'branch.new_request' %}active{% endif %}"
+         href="{{ url_for('branch.new_request') }}">
+        <i class="bi bi-plus-circle"></i>New Card Request
+      </a>
+      <a class="nav-link {% if request.endpoint == 'branch.sold_summary' %}active{% endif %}"
+         href="{{ url_for('branch.sold_summary') }}">
+        <i class="bi bi-pencil-square"></i>Update Sold Quantity
+      </a>
+      <a class="nav-link {% if request.endpoint == 'auth.change_password' %}active{% endif %}"
+         href="{{ url_for('auth.change_password') }}">
+        <i class="bi bi-shield-lock"></i>Change Password
+      </a>
+    </nav>
+    <div class="mt-auto px-2 pb-2">
+      <div class="bg-success bg-opacity-25 rounded p-2 text-white" style="font-size:.75rem;">
+        <i class="bi bi-bank me-1"></i>{{ current_user.branch_name }}<br>
+        <i class="bi bi-tag me-1"></i>{{ current_user.branch_code }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+
+
+  
+  <!-- Main content -->
+  <div class="flex-grow-1 p-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
+          {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+
+</div>
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

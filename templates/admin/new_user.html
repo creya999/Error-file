@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}Add New User – ADBL Admin{% endblock %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<style>
+  .select2-container--default .select2-selection--single {
+    height: 38px; border: 1px solid #ced4da; border-radius: 6px;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 36px; padding-left: 12px; color: #212529;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow { height: 36px; }
+  .select2-container { width: 100% !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-person-plus me-2"></i>Add New User</h4>
+  <a href="{{ url_for('admin.users') }}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-left me-1"></i>Back
+  </a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white fw-semibold text-success">
+        <i class="bi bi-person-badge me-2"></i>Branch Staff Registration
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('admin.new_user') }}">
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Staff ID <span class="text-danger">*</span></label>
+              <input type="text" name="staff_id" class="form-control"
+                     placeholder="e.g. BR001"
+                     value="{{ form_data.get('staff_id', '') }}" required/>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Username <span class="text-muted small">(optional)</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-at"></i></span>
+                <input type="text" name="username" class="form-control"
+                       placeholder="e.g. niraj.pradhan"
+                       value="{{ form_data.get('username', '') }}"/>
+              </div>
+              <div class="form-text">If set, user can login with this username instead of Staff ID.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+              <input type="text" name="full_name" class="form-control"
+                     placeholder="Full name"
+                     value="{{ form_data.get('full_name', '') }}" required/>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Phone <span class="text-muted small">(optional)</span></label>
+              <input type="text" name="phone" class="form-control"
+                     placeholder="98XXXXXXXX"
+                     value="{{ form_data.get('phone', '') }}"/>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
+              <select name="role" class="form-select">
+  <option value="maker"   {% if form_data.get('role','maker') == 'maker'   %}selected{% endif %}>Maker (Branch Staff)</option>
+  <option value="checker" {% if form_data.get('role') == 'checker' %}selected{% endif %}>Checker (Branch Supervisor)</option>
+  <option value="admin"   {% if form_data.get('role') == 'admin'   %}selected{% endif %}>Admin (Head Office)</option>
+</select>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold">Branch <span class="text-danger">*</span></label>
+              <select name="branch_select" id="branchSelect" class="form-select" required>
+                <option value="">-- Search and select branch --</option>
+                {% for b in branches %}
+                <option value="{{ b.branch_code }}|{{ b.branch_name }}"
+                  {% if form_data.get('branch_code') == b.branch_code %}selected{% endif %}>
+                  {{ b.branch_code }} — {{ b.branch_name }}
+                </option>
+                {% endfor %}
+              </select>
+              <div class="form-text">Start typing branch name or code to search.</div>
+              <input type="hidden" name="branch_code" id="branchCode" value="{{ form_data.get('branch_code','') }}"/>
+              <input type="hidden" name="branch_name" id="branchName" value="{{ form_data.get('branch_name','') }}"/>
+            </div>
+
+            <!-- Password -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="password" name="password" id="newPwd" class="form-control"
+                       placeholder="Min. 6 characters" required minlength="6"/>
+                <button class="btn btn-outline-secondary" type="button" onclick="toggleVis('newPwd','eyeNew')">
+                  <i class="bi bi-eye" id="eyeNew"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="password" name="confirm_password" id="confirmPwd" class="form-control"
+                       placeholder="Re-type password" required minlength="6"/>
+                <button class="btn btn-outline-secondary" type="button" onclick="toggleVis('confirmPwd','eyeConfirm')">
+                  <i class="bi bi-eye" id="eyeConfirm"></i>
+                </button>
+              </div>
+              <div id="pwdMatchMsg" class="form-text"></div>
+            </div>
+
+          </div>
+
+          <hr class="my-4"/>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-adbn px-4" id="submitBtn">
+              <i class="bi bi-person-check me-1"></i>Create User
+            </button>
+            <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $('#branchSelect').select2({ placeholder: 'Search branch name or code...' });
+  $('#branchSelect').on('change', function(){
+    const val = $(this).val();
+    if(val){ const p = val.split('|'); $('#branchCode').val(p[0]); $('#branchName').val(p[1]); }
+    else { $('#branchCode').val(''); $('#branchName').val(''); }
+  });
+  (function(){
+    const val = $('#branchSelect').val();
+    if(val){ const p = val.split('|'); $('#branchCode').val(p[0]); $('#branchName').val(p[1]); }
+  })();
+
+  function toggleVis(inputId, iconId){
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    if(input.type === 'password'){ input.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { input.type = 'password'; icon.className = 'bi bi-eye'; }
+  }
+
+  // Live password match check
+  function checkMatch(){
+    const p1  = document.getElementById('newPwd').value;
+    const p2  = document.getElementById('confirmPwd').value;
+    const msg = document.getElementById('pwdMatchMsg');
+    const btn = document.getElementById('submitBtn');
+    if(p2.length === 0){ msg.textContent = ''; msg.className = 'form-text'; btn.disabled = false; return; }
+    if(p1 === p2){
+      msg.textContent = '✓ Passwords match';
+      msg.className = 'form-text text-success fw-semibold';
+      btn.disabled = false;
+    } else {
+      msg.textContent = '✗ Passwords do not match';
+      msg.className = 'form-text text-danger fw-semibold';
+      btn.disabled = true;
+    }
+  }
+  document.getElementById('newPwd').addEventListener('input', checkMatch);
+  document.getElementById('confirmPwd').addEventListener('input', checkMatch);
+</script>
+{% endblock %}

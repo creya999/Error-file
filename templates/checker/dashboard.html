@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block title %}Checker Dashboard – ADBL{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4><i class="bi bi-house me-2"></i>Checker Dashboard</h4>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-primary bg-opacity-10 text-primary"><i class="bi bi-layers"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.total }}</div>
+          <div class="text-muted small">Total Requests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-warning bg-opacity-10 text-warning"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.pending }}</div>
+          <div class="text-muted small">Awaiting Review</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.approved }}</div>
+          <div class="text-muted small">Forwarded to Admin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-box bg-danger bg-opacity-10 text-danger"><i class="bi bi-x-circle"></i></div>
+        <div>
+          <div class="fs-4 fw-bold">{{ stats.rejected }}</div>
+          <div class="text-muted small">Rejected</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Requests Table -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-card-list me-2 text-success"></i>Branch Card Requests</span>
+    <span class="text-muted small fw-normal">{{ requests|length }} total</span>
+  </div>
+  <div class="card-body p-0">
+    {% if requests %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Request No</th>
+            <th>Card Type</th>
+            <th>Qty Requested</th>
+            <th>Remarks</th>
+            <th>Submitted By</th>
+            <th>Requested At</th>
+            <th>Checker Status</th>
+            <th>Admin Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td class="text-muted small">{{ loop.index }}</td>
+
+            <td><span class="fw-semibold text-success">{{ r.request_no }}</span></td>
+
+            <td>
+              {% if r.card_type == 'Visa Card' %}
+                <span class="badge bg-primary">Visa Card</span>
+              {% elif r.card_type == 'NepalPay Card' %}
+                <span class="badge bg-secondary">NepalPay Card</span>
+              {% elif r.card_type == 'UnionPay Card' %}
+                <span class="badge bg-warning text-dark">UnionPay Card</span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+
+            <td><span class="badge bg-secondary">{{ r.quantity }}</span></td>
+
+            <td class="text-muted small">{{ r.remarks or '—' }}</td>
+
+            <td class="small">{{ r.staff_id }}</td>
+
+            <td class="small">
+              {{ r.requested_at.strftime('%Y-%m-%d') }}<br>
+              <span class="text-muted">{{ r.requested_at.strftime('%H:%M') }}</span>
+            </td>
+
+            <!-- Checker Status -->
+            <td>
+              {% if r.checker_status == 'Approved' %}
+                <span class="badge bg-success">Forwarded to Admin</span>
+                <div class="text-muted small">{{ r.checked_at.strftime('%Y-%m-%d') if r.checked_at else '' }}</div>
+              {% elif r.checker_status == 'Rejected' %}
+                <span class="badge bg-danger">Rejected</span>
+                {% if r.checker_remarks %}
+                  <div class="text-muted small">{{ r.checker_remarks }}</div>
+                {% endif %}
+              {% else %}
+                <span class="badge bg-warning text-dark">Awaiting Review</span>
+              {% endif %}
+            </td>
+
+            <!-- FIX: Admin Status column added so checker can track full lifecycle -->
+            <td>
+              {% if r.status == 'Pending' %}
+                <span class="badge badge-pending px-2 py-1"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
+              {% elif r.status == 'Approved' %}
+                <span class="badge badge-approved px-2 py-1"><i class="bi bi-check-circle me-1"></i>Approved</span>
+              {% elif r.status == 'Dispatched' %}
+                <span class="badge badge-dispatched px-2 py-1"><i class="bi bi-truck me-1"></i>Dispatched</span>
+              {% elif r.status == 'Received' %}
+                <span class="badge badge-received px-2 py-1"><i class="bi bi-patch-check me-1"></i>Received</span>
+              {% else %}
+                <span class="badge badge-rejected px-2 py-1"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+              {% endif %}
+            </td>
+
+            <!-- FIX: Pending → Review button; already actioned → View button (goes to branch.view_request) -->
+            <td>
+              {% if r.checker_status == 'Pending' %}
+                <a href="{{ url_for('checker.review_request', req_id=r.id) }}"
+                   class="btn btn-sm btn-adbn">
+                  <i class="bi bi-pencil-square me-1"></i>Review
+                </a>
+              {% else %}
+                <a href="{{ url_for('branch.view_request', req_id=r.id) }}"
+                   class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-eye me-1"></i>View
+                </a>
+              {% endif %}
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-inbox fs-1"></i>
+      <p class="mt-2">No card requests from your branch yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
