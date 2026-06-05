@@ -77,7 +77,7 @@
             <th>Cards Remaining</th>
             <th>Remarks</th>
             <th>Requested At</th>
-            <th>Checker Status</th>
+            <th>Approver Status</th>
             <th>Status</th>
             <th style="width:80px">Action</th>
           </tr>
@@ -143,16 +143,16 @@
             <!-- Checker Status -->
             <td>
               {% if r.checker_status == 'Approved' %}
-                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Checker Approved</span>
+                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Approver Approved</span>
               {% elif r.checker_status == 'Rejected' %}
-                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Checker Rejected</span>
+                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Approver Rejected</span>
                 {% if r.checker_remarks %}
                   <div class="text-muted small mt-1">{{ r.checker_remarks }}</div>
                 {% endif %}
               {% elif r.checker_status == 'Legacy' %}
                 <span class="badge bg-secondary">Legacy</span>
               {% else %}
-                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Awaiting Checker</span>
+                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Awaiting Approver</span>
               {% endif %}
             </td>
 

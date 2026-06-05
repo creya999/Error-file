@@ -59,7 +59,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Phone <span class="text-muted small">(optional)</span></label>
+              <label class="form-label fw-semibold">Phone No.<span class="text-muted small">(optional)</span></label>
               <input type="text" name="phone" class="form-control"
                      placeholder="98XXXXXXXX"
                      value="{{ form_data.get('phone', '') }}"/>
@@ -68,9 +68,9 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
               <select name="role" class="form-select">
-  <option value="maker"   {% if form_data.get('role','maker') == 'maker'   %}selected{% endif %}>Maker (Branch Staff)</option>
-  <option value="checker" {% if form_data.get('role') == 'checker' %}selected{% endif %}>Checker (Branch Supervisor)</option>
-  <option value="admin"   {% if form_data.get('role') == 'admin'   %}selected{% endif %}>Admin (Head Office)</option>
+  <option value="maker"   {% if form_data.get('role','maker') == 'maker'   %}selected{% endif %}>Inputter</option>
+  <option value="checker" {% if form_data.get('role') == 'checker' %}selected{% endif %}>Approver</option>
+  <option value="admin"   {% if form_data.get('role') == 'admin'   %}selected{% endif %}>Admin</option>
 </select>
             </div>
 

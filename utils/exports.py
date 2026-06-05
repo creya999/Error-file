@@ -36,15 +36,35 @@ def export_requests_pdf(requests_list, status_label='Approved'):
     # Header
     elements.append(Paragraph('Agricultural Development Bank Limited (ADBL)', title_style))
     elements.append(Spacer(1, 3*mm))
-    elements.append(Paragraph('Head Office – Digital Banking Department', sub_style))
-    elements.append(Spacer(1, 3*mm))
-    elements.append(Paragraph(f'Instant Card Request List  [{status_label}]', sub_style))
-    elements.append(Spacer(1, 3*mm))
-    elements.append(Paragraph(f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M")}', sub_style))
+    elements.append(Paragraph(
+    '<b>Head Office – Digital Banking Department</b>',
+    ParagraphStyle(
+        'DeptStyle',
+        parent=styles['Normal'],
+        fontSize=12,
+        leading=16,
+        alignment=1
+    )
+))
+
+    elements.append(Paragraph(
+    '<b>Instant Card Request List</b>',
+    ParagraphStyle(
+        'DeptStyle',
+        parent=styles['Normal'],
+        fontSize=12,
+        leading=16,
+        alignment=1
+    )
+))
+ 
+ 
+
+    elements.append(Paragraph(f'<b>Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M")}</b>', sub_style))
     elements.append(Spacer(1, 8*mm))
 
     # Table headers
-    headers = ['#', 'Request No', 'Branch Code', 'Branch Name',
+    headers = ['S.No', 'Request No', 'Branch Code', 'Branch Name',
                'Staff ID', 'Staff Phone', 'Qty', 'Remarks', 'Requested Date', 'Status']
 
     data = [headers]
@@ -115,7 +135,7 @@ def export_requests_excel(requests_list, status_label='Approved'):
     # Bank header rows
     ws.merge_cells('A1:J1')
     ws['A1'] = 'Agricultural Development Bank Limited (ADBL)'
-    ws['A1'].font = Font(bold=True, size=14, color='1a6b3c')
+    ws['A1'].font = Font(bold=True, size=16, color='1a6b3c')
     ws['A1'].alignment = center
 
     ws.merge_cells('A2:J2')
@@ -126,7 +146,7 @@ def export_requests_excel(requests_list, status_label='Approved'):
     ws.append([])  # blank row
 
     # Column headers
-    headers = ['Serial No.', 'Request No', 'Branch Code', 'Branch Name',
+    headers = ['S.No', 'Request No', 'Branch Code', 'Branch Name',
                'Staff ID', 'Staff Phone', 'Quantity', 'Remarks', 'Requested Date', 'Status']
     ws.append(headers)
     for col, cell in enumerate(ws[4], 1):

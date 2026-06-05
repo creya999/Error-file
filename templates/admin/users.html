@@ -43,10 +43,10 @@
                 <span class="badge bg-danger">Admin</span>
 
                 {% elif u.role == 'checker' %}
-                <span class="badge bg-warning text-dark">Checker</span>
+                <span class="badge bg-warning text-dark">Approver</span>
 
                 {% elif u.role == 'maker' %}
-                <span class="badge bg-primary">Maker</span>
+                <span class="badge bg-primary">Inputter</span>
 
                 {% else %}
                 <span class="badge bg-secondary">{{ u.role }}</span>
