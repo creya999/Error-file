@@ -112,7 +112,7 @@
   <div class="container-fluid px-3">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('auth.index') }}">
       <img src="{{ url_for('static', filename='adbl.jpeg') }}" alt="ADBL" style="height:38px;object-fit:contain;border-radius:4px;"/>
-      <span>ADBL &mdash; Instant Card System</span>
+      <span>ADBL &mdash; Instant Card Management System</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
@@ -122,7 +122,7 @@
         <li class="nav-item me-2">
           <span class="text-white-50 small">
             <i class="bi bi-person-circle me-1"></i>{{ current_user.full_name }}
-            <span class="badge bg-warning text-dark ms-1">{{ current_user.role|capitalize }}</span>
+            <!--<span class="badge bg-warning text-dark ms-1">{{ current_user.role|capitalize }}</span>-->
           </span>
         </li>
         {% if current_user.role == 'admin' and received_count > 0 %}
@@ -160,8 +160,8 @@
   {% if current_user.role == 'admin' %}
   <!-- Admin sidebar -->
   <div class="sidebar d-flex flex-column pt-2">
-    <div class="sidebar-header">Main Menu</div>
-    <nav class="nav flex-column">
+    <div class="sidebar-header fw-bold fs-6">Main Menu</div>
+       <nav class="nav flex-column">
       <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
          href="{{ url_for('admin.dashboard') }}">
         <i class="bi bi-speedometer2"></i>Dashboard
@@ -175,7 +175,7 @@
         <i class="bi bi-people"></i>Users
       </a>
     </nav>
-    <div class="sidebar-header mt-3">Export</div>
+    <div class="sidebar-header fw-bold fs-6">Export</div>
     <nav class="nav flex-column">
       <a class="nav-link" href="{{ url_for('admin.export_pdf', status='All') }}" target="_blank">
         <i class="bi bi-file-earmark-pdf"></i>PDF (All)
@@ -189,7 +189,7 @@
   {% elif current_user.role == 'checker' %}
   <!-- Checker sidebar -->
   <div class="sidebar d-flex flex-column pt-2">
-    <div class="sidebar-header">Checker Menu</div>
+    <div class="sidebar-header fw-bold fs-6">Approver Menu</div>
     <nav class="nav flex-column">
       <a class="nav-link {% if request.endpoint == 'checker.dashboard' %}active{% endif %}"
          href="{{ url_for('checker.dashboard') }}">
@@ -211,7 +211,7 @@
   {% else %}
   <!-- Maker sidebar -->
   <div class="sidebar d-flex flex-column pt-2">
-    <div class="sidebar-header">Maker Menu</div>
+    <div class="sidebar-header fw-bold fs-6">Maker Menu</div>
     <nav class="nav flex-column">
       <a class="nav-link {% if request.endpoint == 'branch.dashboard' %}active{% endif %}"
          href="{{ url_for('branch.dashboard') }}">
