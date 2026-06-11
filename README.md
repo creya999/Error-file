@@ -1,4 +1,4 @@
-# ADBN Instant Card Systems
+# ADBN Instant Card System
 
 **Agricultural Development Bank Nepal – Head Office Card Operations**
 
@@ -12,16 +12,63 @@ Runs on **Windows with SQL Server** (production) and **Mac/Linux with SQLite** (
 | Feature | Details |
 |---|---|
 | Branch Login | Each branch logs in with Staff ID or Username |
-| Card Request | Branches submit instant card requests to Head Office |
+| Card Request | Maker submits instant card requests to Head Office |
+| Checker Workflow | Checker at the branch reviews and approves/rejects before it reaches Admin |
 | Partial Approval | Admin can approve a lower quantity than requested |
 | Dispatch Tracking | Admin marks approved requests as dispatched with optional courier details |
 | Receipt Confirmation | Branch confirms receipt of cards; admin is notified via bell icon |
-| Status Tracking | Branches track: Pending / Approved / Dispatched / Received / Rejected |
+| Card Sales Tracking | Branch records how many cards were sold per request |
+| Status Tracking | Pending / Approved / Dispatched / Received / Rejected |
 | Admin Panel | Head Office admin reviews, approves, rejects, and dispatches requests |
 | User Management | Admin can add/activate/deactivate/reset password for branch staff |
+| Role Management | Three roles: **maker**, **checker**, **admin** |
 | Change Password | All users can change their own password |
 | PDF Export | Generate printable card request list PDF |
 | Excel Export | Export card request list to Excel |
+
+---
+
+## User Roles
+
+| Role | Who | What they can do |
+|---|---|---|
+| `maker` | Branch staff | Submit card requests |
+| `checker` | Branch supervisor | Review and approve/reject requests before they reach Admin |
+| `admin` | Head Office | Final approval, dispatch, user management |
+
+> A checker **cannot** approve their own requests. Once a checker approves a request, it appears in the Admin queue.
+
+---
+
+## Card Request Lifecycle
+
+```
+Maker submits request
+        │
+        ▼
+   [Checker Pending]  ←── Checker reviews (same branch)
+        │
+   ┌────┴────┐
+   ▼         ▼
+[Checker    [Checker
+ Approved]   Rejected]  ←── Request closed, branch notified
+   │
+   ▼
+[Admin Pending]  ←── Admin reviews
+   │
+   ┌────┴────┐
+   ▼         ▼
+[Approved] [Rejected]
+   │
+   ▼
+[Dispatched]  ←── Admin marks dispatched (with courier details)
+   │
+   ▼
+[Received]  ←── Branch confirms receipt → Admin notified via bell icon
+   │
+   ▼
+[Sales Recorded]  ←── Branch logs cards sold / remaining
+```
 
 ---
 
@@ -170,11 +217,8 @@ Allow HTTPS (port 443) through Windows Firewall so VPN-connected branch users ca
 So the app starts automatically when the server reboots, without anyone needing to double-click `start.bat`:
 
 ```bat
-:: Run this once in Command Prompt as Administrator
-pip install pywin32
-
-:: Then create the service using NSSM (Non-Sucking Service Manager)
 :: Download NSSM from https://nssm.cc/download
+:: Run this once in Command Prompt as Administrator
 nssm install "ADBN Card System" "C:\ADBN\adbn_instant_card\venv\Scripts\python.exe" "C:\ADBN\adbn_instant_card\serve.py"
 nssm set "ADBN Card System" AppDirectory "C:\ADBN\adbn_instant_card"
 nssm start "ADBN Card System"
@@ -303,21 +347,22 @@ SECRET_KEY=paste-a-long-random-key-here
 
 Double-click **`install.bat`**. It will:
 
-1. Check Python is installed
+1. Check Python is installed (tries `python` and `py`)
 2. Check ODBC Driver 17 is installed
 3. Create a Python virtual environment (`venv\`)
 4. Install all required packages from `requirements.txt`
 5. Open `.env` in Notepad if it does not exist yet
 6. Run `migrate.py` — adds all required database columns automatically
-7. Import all 285 branches from `branches.json`
+7. Run `fix_roles.py` — fixes any legacy role/status data (safe on fresh installs)
+8. Import all 285 branches from `branches.json`
 
-> **Note:** Steps 6 and 7 require the database and `.env` to be configured correctly. If either shows a warning, complete the `.env` setup and re-run `install.bat`, or run the scripts manually (see Step 8).
+> **Note:** Steps 6–8 require the database and `.env` to be configured correctly. If any step shows a warning, complete the `.env` setup and re-run `install.bat`, or run the scripts manually (see Step 8).
 
 ---
 
 ### Step 7 — Start the Application
 
-Double-click **`start.bat`**. It will start the Flask/Waitress server.
+Double-click **`start.bat`**. It will run any pending migrations then start the Flask/Waitress server.
 
 Open your browser and go to: **http://localhost:5000**
 
@@ -328,7 +373,7 @@ Log in with the default admin credentials:
 | Staff ID | `ADMIN001` |
 | Password | `Admin@1234` |
 
-> Change this password immediately after first login via the navbar → **Change Password**.
+> **Change this password immediately** after first login via the navbar → **Change Password**.
 
 ---
 
@@ -357,9 +402,13 @@ When you pull new code onto an already-installed Windows machine:
    venv\Scripts\activate.bat
    python migrate.py
    ```
-3. Restart `start.bat`
+3. Run the role fix script (required when upgrading from pre-checker versions):
+   ```bat
+   python fix_roles.py
+   ```
+4. Restart `start.bat`
 
-> `migrate.py` is safe to run multiple times — it skips columns that already exist.
+> Both scripts are safe to run multiple times — they skip work that is already done.
 
 ---
 
@@ -387,9 +436,9 @@ When you pull new code onto an already-installed Windows machine:
 
 1. Log in as Admin
 2. Go to **Users → Add New User**
-3. Fill in Staff ID, Full Name, Branch (searchable dropdown), and Password
+3. Fill in Staff ID, Full Name, Branch (searchable dropdown), Role (`maker` or `checker`), and Password
 4. Phone and Username are optional
-5. Branch staff can then log in and submit card requests
+5. Branch staff can then log in according to their role
 
 ---
 
@@ -399,18 +448,21 @@ When you pull new code onto an already-installed Windows machine:
 adbn_instant_card\
 ├── app.py                  # Flask application entry point
 ├── config.py               # Database configuration (SQL Server / SQLite toggle)
-├── models.py               # Database models (User, Branch, CardRequest)
+├── models.py               # Database models (User, Branch, CardRequest, CardSale)
 ├── migrate.py              # Database migration script — run after updates
+├── fix_roles.py            # One-time data fix for legacy role/status values
 ├── requirements.txt        # Python dependencies
 ├── branches.json           # All 285 ADBN branches (used by import_branches.py)
 ├── import_branches.py      # One-time branch seeding script
+├── serve.py                # Production WSGI entry point (Waitress)
 ├── .env                    # Your local configuration (do not share)
 ├── .env.example            # Template for .env
 ├── install.bat             # Windows one-click installer
-├── start.bat               # Windows launcher
+├── start.bat               # Windows launcher (runs migrations + starts server)
 ├── routes\
 │   ├── auth.py             # Login / Logout / Change Password
-│   ├── branch.py           # Branch dashboard, card request, mark received
+│   ├── branch.py           # Maker dashboard, card request, mark received, card sales
+│   ├── checker.py          # Checker dashboard, approve/reject requests
 │   └── admin.py            # Admin panel, approvals, dispatch, exports, user management
 ├── utils\
 │   └── exports.py          # PDF and Excel export logic
@@ -423,6 +475,9 @@ adbn_instant_card\
     │   ├── dashboard.html
     │   ├── new_request.html
     │   └── view_request.html
+    ├── checker\
+    │   ├── dashboard.html
+    │   └── review_request.html
     └── admin\
         ├── dashboard.html
         ├── requests.html
@@ -433,32 +488,12 @@ adbn_instant_card\
 
 ---
 
-## Card Request Lifecycle
-
-```
-Branch submits request
-        │
-        ▼
-   [Pending]  ←── Admin reviews
-        │
-   ┌────┴────┐
-   ▼         ▼
-[Approved] [Rejected]
-   │
-   ▼
-[Dispatched]  ←── Admin marks as dispatched (with courier details)
-   │
-   ▼
-[Received]  ←── Branch confirms receipt → Admin notified via bell icon
-```
-
----
-
 ## Card Request Fields
 
 | Field | Description |
 |---|---|
 | Quantity | Number of blank instant cards required (minimum 1) |
+| Card Type | Visa Card / Domestic Card / UnionPay Card |
 | Mobile Number | Staff contact number for this request |
 | Remarks | Optional notes for Head Office |
 | Branch Info | Auto-filled from logged-in user's profile |
@@ -468,17 +503,28 @@ Branch submits request
 
 ## Troubleshooting
 
+**`python` is not recognized when running install.bat:**
+- Python is not in PATH. Re-run the Python installer → choose **Modify** → check **"Add Python to environment variables"**
+- Or verify with: `python --version` and `py --version` in Command Prompt
+
 **App crashes after pulling new code (`no such column` error):**
-- New columns were added in the update. Run the migration script:
+- Run the migration script:
   ```bat
   venv\Scripts\activate.bat
   python migrate.py
   ```
   Then restart `start.bat`.
 
+**Admin dashboard shows no requests after upgrade:**
+- Run `fix_roles.py` to tag legacy requests:
+  ```bat
+  venv\Scripts\activate.bat
+  python fix_roles.py
+  ```
+
 **`pyodbc` fails to install (build error / wheel error):**
 - Install **Microsoft C++ Build Tools** from https://visualstudio.microsoft.com/visual-cpp-build-tools/ — select "Desktop development with C++"
-- Or check if pyodbc is already installed: `pip show pyodbc` — if it is, update `requirements.txt` to match that version
+- Or check if pyodbc is already installed: `pip show pyodbc`
 
 **`sqlcmd` or app cannot connect to SQL Server (TCP error):**
 - TCP/IP is likely disabled. Follow Step 2 above to enable it in SQL Server Configuration Manager and restart the SQL Server service
@@ -491,10 +537,6 @@ Branch submits request
 
 **App connects via SSMS but not via the app:**
 - SSMS uses Shared Memory (local only); the app uses TCP/IP — make sure TCP/IP is enabled (Step 2)
-
-**`pyodbc` version conflict during install:**
-- Check your installed version: `pip show pyodbc`
-- Update `requirements.txt` to match: e.g. `pyodbc==5.3.0`
 
 **Branch dropdown is empty when adding users:**
 - Run branch import manually:
@@ -516,13 +558,14 @@ Branch submits request
 - Reset via another admin account: **User Management → Reset Password**
 - Or open SSMS and run:
   ```sql
-  -- First generate a new hash with: python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('NewPassword'))"
-  UPDATE [user] SET password_hash = '<generated_hash>' WHERE staff_id = 'ADMIN001';
+  -- First generate a new hash with:
+  -- python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('NewPassword'))"
+  UPDATE [users] SET password_hash = '<generated_hash>' WHERE staff_id = 'ADMIN001';
   ```
 
 **Using Windows Authentication instead of SQL login:**
 - Leave `DB_USER` and `DB_PASSWORD` blank in `.env`
-- The app will automatically use `Trusted_Connection=yes` when no username is provided — or update `config.py` manually:
+- Update `config.py` manually:
   ```python
   _conn_str = (
       "DRIVER={ODBC Driver 17 for SQL Server};"
@@ -539,7 +582,7 @@ No SQL Server or ODBC driver needed. The app uses a local SQLite file instead.
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install flask flask-login flask-sqlalchemy flask-wtf wtforms sqlalchemy werkzeug python-dotenv reportlab openpyxl
 ```
 
 Create a `.env` file with:
@@ -555,3 +598,6 @@ python3 app.py
 ```
 
 Open your browser at **http://localhost:5000** and log in with `ADMIN001` / `Admin@1234`.
+
+---
+
