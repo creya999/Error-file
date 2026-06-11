@@ -9,20 +9,28 @@ echo ============================================================
 echo.
 
 :: ── Check Python ─────────────────────────────────────────────
+:: Try 'python' first, then fall back to 'py' (Python Launcher for Windows)
+set PYTHON_CMD=python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Python is not installed or not in PATH.
-    echo.
-    echo   Please install Python 3.10 or later from:
-    echo   https://www.python.org/downloads/
-    echo.
-    echo   IMPORTANT: During installation check the box:
-    echo   "Add Python to PATH"
-    echo.
-    pause
-    exit /b 1
+    py --version >nul 2>&1
+    if errorlevel 1 (
+        echo [ERROR] Python is not installed or not in PATH.
+        echo.
+        echo   Please install Python 3.10 - 3.12 from:
+        echo   https://www.python.org/downloads/
+        echo.
+        echo   IMPORTANT: During installation, check the box:
+        echo   "Add Python to PATH"
+        echo.
+        echo   After installing, close this window and run install.bat again.
+        echo.
+        pause
+        exit /b 1
+    )
+    set PYTHON_CMD=py
 )
-for /f "tokens=*" %%i in ('python --version') do echo [OK] %%i found.
+for /f "tokens=*" %%i in ('%PYTHON_CMD% --version') do echo [OK] %%i found.
 
 :: ── Check ODBC Driver ────────────────────────────────────────
 reg query "HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Driver 17 for SQL Server" >nul 2>&1
@@ -41,22 +49,42 @@ if errorlevel 1 (
 :: ── Create virtual environment ───────────────────────────────
 if not exist "venv" (
     echo [INFO] Creating Python virtual environment...
-    python -m venv venv
+    %PYTHON_CMD% -m venv venv
+    if errorlevel 1 (
+        echo [ERROR] Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
     echo [OK] Virtual environment created.
+) else (
+    echo [OK] Virtual environment already exists.
 )
 
-:: ── Activate venv ────────────────────────────────────────────
-call venv\Scripts\activate.bat
+:: ── Use full venv paths — no reliance on activate ─────────────
+set VENV_PYTHON=%~dp0venv\Scripts\python.exe
+
+if not exist "%VENV_PYTHON%" (
+    echo [ERROR] venv\Scripts\python.exe not found.
+    echo         Delete the venv folder and run install.bat again.
+    pause
+    exit /b 1
+)
 
 :: ── Upgrade pip ──────────────────────────────────────────────
 echo [INFO] Upgrading pip...
-python -m pip install --upgrade pip --quiet
+"%VENV_PYTHON%" -m pip install --upgrade pip --quiet
 
 :: ── Install packages ─────────────────────────────────────────
 echo [INFO] Installing required packages (this may take a minute)...
-pip install -r requirements.txt
+"%VENV_PYTHON%" -m pip install -r requirements.txt
 if errorlevel 1 (
-    echo [ERROR] Package installation failed. Check your internet connection.
+    echo.
+    echo [ERROR] Package installation failed.
+    echo   - Check your internet connection
+    echo   - Make sure Microsoft C++ Build Tools are installed (required for pyodbc):
+    echo     https://visualstudio.microsoft.com/visual-cpp-build-tools/
+    echo     Select "Desktop development with C++" during install.
+    echo.
     pause
     exit /b 1
 )
@@ -65,28 +93,42 @@ echo [OK] All packages installed.
 :: ── Create .env if missing ───────────────────────────────────
 if not exist ".env" (
     echo.
-    echo [INFO] Creating .env configuration file...
+    echo [INFO] Creating .env configuration file from template...
     copy .env.example .env >nul
-    echo [ACTION REQUIRED] Please fill in your SQL Server details in the .env file.
+    echo [ACTION REQUIRED] Fill in your SQL Server details in the .env file.
     echo.
-    echo Opening .env file for editing...
+    echo   Opening .env in Notepad — save and close when done...
     notepad .env
+    echo.
+    echo [INFO] Waiting for you to save .env before continuing...
+    pause
 )
 
 :: ── Run database migrations ──────────────────────────────────
 echo [INFO] Running database migrations...
-python migrate.py
+"%VENV_PYTHON%" migrate.py
 if errorlevel 1 (
-    echo [WARNING] Migration failed. You can run migrate.py manually later.
+    echo [WARNING] Migration failed. Ensure .env credentials are correct,
+    echo           then run:  venv\Scripts\python.exe migrate.py
 ) else (
     echo [OK] Database migrations complete.
 )
 
+:: ── Fix legacy roles (safe to run on fresh installs too) ─────
+echo [INFO] Checking for legacy data (role fixes)...
+"%VENV_PYTHON%" fix_roles.py
+if errorlevel 1 (
+    echo [WARNING] fix_roles.py failed. Run manually if upgrading from an older version.
+) else (
+    echo [OK] Role check complete.
+)
+
 :: ── Import branches ──────────────────────────────────────────
 echo [INFO] Importing branch list...
-python import_branches.py
+"%VENV_PYTHON%" import_branches.py
 if errorlevel 1 (
-    echo [WARNING] Branch import failed. You can run import_branches.py manually later.
+    echo [WARNING] Branch import failed. Run manually:
+    echo           venv\Scripts\python.exe import_branches.py
 ) else (
     echo [OK] Branches imported successfully.
 )
@@ -95,14 +137,19 @@ echo.
 echo ============================================================
 echo   Setup Complete!
 echo.
-echo   Next steps:
-echo   1. Make sure SQL Server is running
-echo   2. Create the database in SSMS:
-echo      CREATE DATABASE adbn_instant_card;
-echo   3. Edit .env with your SQL Server credentials
-echo   4. Double-click start.bat to launch the application
-echo   5. Open browser: http://localhost:5000
-echo   6. Login with  Staff ID: ADMIN001  Password: Admin@1234
+echo   Before starting, make sure:
+echo   1. SQL Server is running
+echo   2. Database exists in SSMS:
+echo        CREATE DATABASE adbn_instant_card;
+echo   3. .env has correct DB credentials
+echo.
+echo   Then double-click start.bat to launch the app.
+echo.
+echo   Open browser : http://localhost:5000
+echo   Login        : Staff ID  ADMIN001
+echo                  Password  Admin@1234
+echo.
+echo   Change the admin password immediately after first login!
 echo ============================================================
 echo.
 pause
