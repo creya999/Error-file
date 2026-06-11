@@ -242,46 +242,52 @@ Both scripts are safe to run multiple times.
 
 ---
 
-## Production Deployment (IIS + VPN)
+## Run as Windows Service (Stay Running in Background)
 
-For all branches to access via browser over the bank's VPN:
+So the app keeps running even after closing the window — and auto-starts on every reboot.
 
-```
-Branch PC (VPN) → https://adbn-cards.adbn.gov.np
-                        │
-                  Windows Server (IIS port 443)
-                        │  reverse proxy
-                  Waitress/Flask (port 5000, internal)
-                        │
-                  SQL Server
-```
+### Step 1 — Download NSSM
 
-**`web.config`** (place in project root for IIS reverse proxy):
+Download **nssm.exe** from https://nssm.cc/download
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-  <system.webServer>
-    <rewrite>
-      <rules>
-        <rule name="Flask Proxy" stopProcessing="true">
-          <match url="(.*)" />
-          <action type="Rewrite" url="http://127.0.0.1:5000/{R:1}" />
-        </rule>
-      </rules>
-    </rewrite>
-  </system.webServer>
-</configuration>
-```
+Extract `nssm.exe` and place it directly in the project folder (same folder as `install.bat`).
 
-Required IIS modules: [URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite) + [ARR](https://www.iis.net/downloads/microsoft/application-request-routing)
+### Step 2 — Run the Service Installer
 
-**Run as Windows Service** (auto-start on reboot) using [NSSM](https://nssm.cc/download):
+Right-click **`install_service.bat`** → **Run as administrator**
+
+It will:
+- Install the app as a Windows Service named `ADBN-InstantCard`
+- Set it to **auto-start on boot**
+- Save logs to the `logs\` folder in the project
+
+### Step 3 — Verify
+
+Open your browser: **http://localhost:5000** — the app should be running.
+
+You can also check in **services.msc** — look for **"ADBN Instant Card System"**.
+
+---
+
+### Managing the Service
+
+Open Command Prompt **as Administrator** and run:
+
 ```bat
-nssm install "ADBN Card System" "C:\ADBN\adbn-instant-card\venv\Scripts\python.exe" "C:\ADBN\adbn-instant-card\serve.py"
-nssm set "ADBN Card System" AppDirectory "C:\ADBN\adbn-instant-card"
-nssm start "ADBN Card System"
+:: Stop the service
+nssm stop ADBN-InstantCard
+
+:: Start the service
+nssm start ADBN-InstantCard
+
+:: Restart (e.g. after updating code)
+nssm restart ADBN-InstantCard
+
+:: Remove the service permanently
+nssm remove ADBN-InstantCard confirm
 ```
+
+Or use **services.msc** — search for "ADBN Instant Card System" and Start/Stop from there.
 
 ---
 
@@ -297,6 +303,7 @@ nssm start "ADBN Card System"
 ├── serve.py                # Production entry point (Waitress)
 ├── install.bat             # Windows one-click installer
 ├── start.bat               # Windows launcher
+├── install_service.bat     # Install app as Windows background service (NSSM)
 ├── add_python_to_path.bat  # Fixes Python not in PATH on Windows
 ├── .env.example            # Environment variable template
 ├── routes/
