@@ -8,8 +8,9 @@ from app import create_app
 from models import db
 from sqlalchemy import text, inspect
 
-MIGRATIONS = [
-    # (column_name, sql_type_sqlite, sql_type_mssql, default)
+# Columns to add to card_requests table
+# (column_name, sqlite_type, mssql_type, default)
+CARD_REQUEST_MIGRATIONS = [
     ('approved_quantity',   'INTEGER',       'INT',             None),
     ('dispatched_by',       'VARCHAR(100)',  'NVARCHAR(100)',   None),
     ('dispatched_at',       'DATETIME',      'DATETIME',        None),
@@ -17,9 +18,16 @@ MIGRATIONS = [
     ('received_at',         'DATETIME',      'DATETIME',        None),
     ('received_by',         'VARCHAR(100)',  'NVARCHAR(100)',   None),
     ('admin_acknowledged',  'INTEGER',       'BIT',             '0'),
-    # ── NEW: Card sales tracking ──────────────────────────────────────────────
+    # Checker workflow
+    ('checker_status',      'VARCHAR(20)',   'NVARCHAR(20)',    "'Pending'"),
+    ('checker_remarks',     'VARCHAR(500)',  'NVARCHAR(500)',   None),
+    ('checked_by',          'VARCHAR(100)',  'NVARCHAR(100)',   None),
+    ('checked_at',          'DATETIME',      'DATETIME',        None),
+    # Card sales tracking
     ('cards_sold',          'INTEGER',       'INT',             None),
     ('cards_remaining',     'INTEGER',       'INT',             None),
+    ('card_type',           'VARCHAR(50)',   'NVARCHAR(50)',    None),
+    ('sold_date',           'DATE',          'DATE',            None),
 ]
 
 app = create_app()
@@ -29,15 +37,15 @@ with app.app_context():
     is_sqlite = Config.USE_SQLITE
 
     with db.engine.connect() as conn:
-        # Get existing columns
         inspector = inspect(db.engine)
-        existing  = {col['name'] for col in inspector.get_columns('card_requests')}
+        existing_tables = inspector.get_table_names()
 
-        added   = 0
-        skipped = 0
+        # ── Migrate card_requests columns ─────────────────────────────────────
+        existing_cols = {col['name'] for col in inspector.get_columns('card_requests')}
+        added = skipped = 0
 
-        for col_name, sqlite_type, mssql_type, default in MIGRATIONS:
-            if col_name in existing:
+        for col_name, sqlite_type, mssql_type, default in CARD_REQUEST_MIGRATIONS:
+            if col_name in existing_cols:
                 skipped += 1
                 continue
 
@@ -50,10 +58,43 @@ with app.app_context():
 
             try:
                 conn.execute(text(sql))
-                print(f'  [OK] Added column: {col_name}')
+                print(f'  [OK] card_requests: added column {col_name}')
                 added += 1
             except Exception as e:
-                print(f'  [ERROR] {col_name}: {e}')
+                print(f'  [ERROR] card_requests.{col_name}: {e}')
+
+        # ── Create card_sales table if missing ────────────────────────────────
+        if 'card_sales' not in existing_tables:
+            try:
+                if is_sqlite:
+                    conn.execute(text("""
+                        CREATE TABLE card_sales (
+                            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                            request_id  INTEGER NOT NULL REFERENCES card_requests(id),
+                            cards_sold  INTEGER NOT NULL,
+                            sold_date   DATE NOT NULL,
+                            recorded_by VARCHAR(100),
+                            recorded_at DATETIME
+                        )
+                    """))
+                else:
+                    conn.execute(text("""
+                        CREATE TABLE card_sales (
+                            id          INT IDENTITY(1,1) PRIMARY KEY,
+                            request_id  INT NOT NULL REFERENCES card_requests(id),
+                            cards_sold  INT NOT NULL,
+                            sold_date   DATE NOT NULL,
+                            recorded_by NVARCHAR(100),
+                            recorded_at DATETIME
+                        )
+                    """))
+                print('  [OK] card_sales table created.')
+                added += 1
+            except Exception as e:
+                print(f'  [ERROR] card_sales table: {e}')
+        else:
+            print('  [OK] card_sales table already exists.')
+            skipped += 1
 
         conn.commit()
 
