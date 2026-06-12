@@ -18,8 +18,8 @@ PORT = int(os.environ.get('APP_PORT', '5000'))
 THREADS = int(os.environ.get('APP_THREADS', '4'))
 
 if __name__ == '__main__':
-    print(f'[INFO] ADBN Instant Card System starting...')
+    print(f'[INFO] ADBL Instant Card System starting...')
     print(f'[INFO] Listening on {HOST}:{PORT} with {THREADS} threads')
-    print(f'[INFO] Access via your configured domain (e.g. https://adbn-cards.adbn.gov.np)')
+    print(f'[INFO] Access via your configured domain (e.g. https://adbl-cards.adbl.gov.np)')
     print(f'[INFO] Press CTRL+C to stop.')
     serve(app, host=HOST, port=PORT, threads=THREADS)

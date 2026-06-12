@@ -54,7 +54,7 @@ class CardRequest(db.Model):
     __tablename__ = 'card_requests'
 
     id                = db.Column(db.Integer, primary_key=True)
-    request_no        = db.Column(db.String(30), unique=True, nullable=False)   # e.g. ADBN-2024-00001
+    request_no        = db.Column(db.String(30), unique=True, nullable=False)   # e.g. ADBL-2024-00001
     branch_code       = db.Column(db.String(20), nullable=False)
     branch_name       = db.Column(db.String(150), nullable=False)
     staff_id          = db.Column(db.String(50), nullable=False)

@@ -10,36 +10,36 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
   <style>
     :root {
-      --adbn-green:  #1a6b3c;
-      --adbn-green2: #145530;
-      --adbn-light:  #e8f5e9;
-      --adbn-gold:   #c8a327;
+      --adbl-green:  #1a6b3c;
+      --adbl-green2: #145530;
+      --adbl-light:  #e8f5e9;
+      --adbl-gold:   #c8a327;
     }
     body { background:#f4f6f8; font-family:'Segoe UI',sans-serif; }
 
     /* ── Navbar ── */
-    .navbar-adbn { background: var(--adbn-green); }
-    .navbar-adbn .navbar-brand img { height:40px; }
-    .navbar-adbn .navbar-brand span { color:#fff; font-weight:700; font-size:1.1rem; }
-    .navbar-adbn .nav-link { color:rgba(255,255,255,.85)!important; }
-    .navbar-adbn .nav-link:hover,
-    .navbar-adbn .nav-link.active { color:#fff!important; text-decoration:underline; }
-    .navbar-adbn .dropdown-menu { background: var(--adbn-green2); border:none; }
-    .navbar-adbn .dropdown-item { color:#fff; }
-    .navbar-adbn .dropdown-item:hover { background: rgba(255,255,255,.15); }
+    .navbar-adbl { background: var(--adbl-green); }
+    .navbar-adbl .navbar-brand img { height:40px; }
+    .navbar-adbl .navbar-brand span { color:#fff; font-weight:700; font-size:1.1rem; }
+    .navbar-adbl .nav-link { color:rgba(255,255,255,.85)!important; }
+    .navbar-adbl .nav-link:hover,
+    .navbar-adbl .nav-link.active { color:#fff!important; text-decoration:underline; }
+    .navbar-adbl .dropdown-menu { background: var(--adbl-green2); border:none; }
+    .navbar-adbl .dropdown-item { color:#fff; }
+    .navbar-adbl .dropdown-item:hover { background: rgba(255,255,255,.15); }
 
     
     /* ── Sidebar (admin) ── */
     .sidebar {
       min-height: calc(100vh - 56px);
-      background: var(--adbn-green);
+      background: var(--adbl-green);
       width: 200px; min-width:200px;
     }
     .sidebar .nav-link { color:rgba(255,255,255,.8); padding:.4rem .9rem; border-radius:6px; margin:1px 4px; font-size:.85rem; }
     .sidebar .nav-link:hover,
     .sidebar .nav-link.active { background:rgba(255,255,255,.18); color:#fff; }
     .sidebar .nav-link i { margin-right:5px; }
-    .sidebar-header { color: var(--adbn-gold); font-size:.68rem; font-weight:700;
+    .sidebar-header { color: var(--adbl-gold); font-size:.68rem; font-weight:700;
                        letter-spacing:.07em; padding:.5rem 1rem .2rem; text-transform:uppercase; }
 
     /* ── Cards ── */
@@ -51,14 +51,14 @@
     
 .page-header {
   background: #fff;
-  border-bottom: 3px solid var(--adbn-green);
+  border-bottom: 3px solid var(--adbl-green);
   padding: 1.5rem 2rem;   /* expanded padding */
   margin-bottom: 2rem;    /* more breathing space below */
   border-radius: 0 0 10px 10px; /* slightly larger rounding */
 }
 
 .page-header h4 {
-  color: var(--adbn-green);
+  color: var(--adbl-green);
   margin: 0;
   font-size: 1.4rem;      /* larger font size */
   font-weight: 700;       /* bold for emphasis */
@@ -87,19 +87,19 @@
     .badge-received   { background:#d1e7dd; color:#0a3622; font-weight:700; }
 
     /* ── Table ── */
-    .table thead th { background: var(--adbn-green); color:#fff; border:none; font-size:.85rem; }
-    .table tbody tr:hover { background: var(--adbn-light); }
+    .table thead th { background: var(--adbl-green); color:#fff; border:none; font-size:.85rem; }
+    .table tbody tr:hover { background: var(--adbl-light); }
 
     /* ── Btn primary ── */
-    .btn-adbn { background: var(--adbn-green); color:#fff; border:none; }
-    .btn-adbn:hover { background: var(--adbn-green2); color:#fff; }
+    .btn-adbl { background: var(--adbl-green); color:#fff; border:none; }
+    .btn-adbl:hover { background: var(--adbl-green2); color:#fff; }
 
     /* ── Login page ── */
     .login-box { max-width:440px; margin:60px auto; }
     .login-logo { text-align:center; margin-bottom:1.5rem; }
     .login-logo img { height:80px; }
     .login-card { border:none; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.12); }
-    .login-header { background: var(--adbn-green); color:#fff; border-radius:16px 16px 0 0; padding:1.4rem; text-align:center; }
+    .login-header { background: var(--adbl-green); color:#fff; border-radius:16px 16px 0 0; padding:1.4rem; text-align:center; }
     .login-header h5 { margin:0; font-weight:700; letter-spacing:.03em; }
   </style>
   {% block head %}{% endblock %}
@@ -108,7 +108,7 @@
 
 {% if current_user.is_authenticated %}
 <!-- ── Navbar ─────────────────────────────────────────────── -->
-<nav class="navbar navbar-expand-lg navbar-adbn py-1">
+<nav class="navbar navbar-expand-lg navbar-adbl py-1">
   <div class="container-fluid px-3">
     <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('auth.index') }}">
       <img src="{{ url_for('static', filename='adbl.jpeg') }}" alt="ADBL" style="height:38px;object-fit:contain;border-radius:4px;"/>

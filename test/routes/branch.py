@@ -18,10 +18,10 @@ def branch_required(f):
 
 
 def _generate_request_no():
-    """Generate sequential request number: ADBN-YYYY-NNNNN"""
+    """Generate sequential request number: ADBL-YYYY-NNNNN"""
     year = datetime.utcnow().year
     last = (CardRequest.query
-            .filter(CardRequest.request_no.like(f'ADBN-{year}-%'))
+            .filter(CardRequest.request_no.like(f'ADBL-{year}-%'))
             .order_by(CardRequest.id.desc())
             .first())
     seq = 1
@@ -30,7 +30,7 @@ def _generate_request_no():
             seq = int(last.request_no.split('-')[-1]) + 1
         except ValueError:
             pass
-    return f'ADBN-{year}-{seq:05d}'
+    return f'ADBL-{year}-{seq:05d}'
 
 
 @branch_bp.route('/dashboard')

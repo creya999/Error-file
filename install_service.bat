@@ -1,9 +1,9 @@
 @echo off
-title ADBN - Install as Windows Service
+title ADBL - Install as Windows Service
 color 0A
 
 echo ============================================================
-echo   ADBN Instant Card System - Install as Windows Service
+echo   ADBL Instant Card System - Install as Windows Service
 echo   Run this as Administrator!
 echo ============================================================
 echo.
@@ -34,7 +34,7 @@ set PROJECT_DIR=%~dp0
 set PROJECT_DIR=%PROJECT_DIR:~0,-1%
 set PYTHON_EXE=%PROJECT_DIR%\venv\Scripts\python.exe
 set SERVE_PY=%PROJECT_DIR%\serve.py
-set SERVICE_NAME=ADBN-InstantCard
+set SERVICE_NAME=ADBL-InstantCard
 
 if not exist "%PYTHON_EXE%" (
     echo [ERROR] venv not found. Please run install.bat first.
@@ -57,7 +57,7 @@ if not exist "%PROJECT_DIR%\logs" mkdir "%PROJECT_DIR%\logs"
 echo [INFO] Installing Windows service...
 "%~dp0nssm.exe" install "%SERVICE_NAME%" "%PYTHON_EXE%" "%SERVE_PY%"
 "%~dp0nssm.exe" set "%SERVICE_NAME%" AppDirectory "%PROJECT_DIR%"
-"%~dp0nssm.exe" set "%SERVICE_NAME%" DisplayName "ADBN Instant Card System"
+"%~dp0nssm.exe" set "%SERVICE_NAME%" DisplayName "ADBL Instant Card System"
 "%~dp0nssm.exe" set "%SERVICE_NAME%" Description "Agricultural Development Bank Nepal - Instant Card Request System"
 "%~dp0nssm.exe" set "%SERVICE_NAME%" Start SERVICE_AUTO_START
 "%~dp0nssm.exe" set "%SERVICE_NAME%" AppStdout "%PROJECT_DIR%\logs\app.log"
@@ -82,7 +82,7 @@ echo     Start   : nssm start %SERVICE_NAME%
 echo     Restart : nssm restart %SERVICE_NAME%
 echo     Remove  : nssm remove %SERVICE_NAME% confirm
 echo.
-echo   Or open services.msc and look for "ADBN Instant Card System"
+echo   Or open services.msc and look for "ADBL Instant Card System"
 echo ============================================================
 echo.
 pause

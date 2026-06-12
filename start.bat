@@ -1,5 +1,5 @@
 @echo off
-title ADBN Instant Card System
+title ADBL Instant Card System
 color 0A
 
 echo ============================================================
@@ -37,7 +37,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [INFO] Starting ADBN Instant Card System (Production / Waitress)...
+echo [INFO] Starting ADBL Instant Card System (Production / Waitress)...
 echo [INFO] Listening on 127.0.0.1:5000
 echo [INFO] Access via your configured domain over VPN
 echo [INFO] Press CTRL+C to stop the server.

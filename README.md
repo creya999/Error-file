@@ -1,4 +1,4 @@
-# ADBN Instant Card System
+# ADBL Instant Card System
 
 **Agricultural Development Bank Nepal – Head Office Card Operations**
 
@@ -114,7 +114,7 @@ sqlcmd -S localhost -U sa -Q "SELECT @@VERSION"
 Open **SSMS** and run:
 
 ```sql
-CREATE DATABASE adbn_instant_card;
+CREATE DATABASE adbl_instant_card;
 ```
 
 ---
@@ -128,7 +128,7 @@ USE_SQLITE=false
 
 DB_SERVER=localhost
 DB_PORT=
-DB_NAME=adbn_instant_card
+DB_NAME=adbl_instant_card
 DB_USER=sa
 DB_PASSWORD=YourSQLServerPassword
 
@@ -257,7 +257,7 @@ Extract `nssm.exe` and place it directly in the project folder (same folder as `
 Right-click **`install_service.bat`** → **Run as administrator**
 
 It will:
-- Install the app as a Windows Service named `ADBN-InstantCard`
+- Install the app as a Windows Service named `ADBL-InstantCard`
 - Set it to **auto-start on boot**
 - Save logs to the `logs\` folder in the project
 
@@ -265,7 +265,7 @@ It will:
 
 Open your browser: **http://localhost:5000** — the app should be running.
 
-You can also check in **services.msc** — look for **"ADBN Instant Card System"**.
+You can also check in **services.msc** — look for **"ADBL Instant Card System"**.
 
 ---
 
@@ -275,19 +275,19 @@ Open Command Prompt **as Administrator** and run:
 
 ```bat
 :: Stop the service
-nssm stop ADBN-InstantCard
+nssm stop ADBL-InstantCard
 
 :: Start the service
-nssm start ADBN-InstantCard
+nssm start ADBL-InstantCard
 
 :: Restart (e.g. after updating code)
-nssm restart ADBN-InstantCard
+nssm restart ADBL-InstantCard
 
 :: Remove the service permanently
-nssm remove ADBN-InstantCard confirm
+nssm remove ADBL-InstantCard confirm
 ```
 
-Or use **services.msc** — search for "ADBN Instant Card System" and Start/Stop from there.
+Or use **services.msc** — search for "ADBL Instant Card System" and Start/Stop from there.
 
 ---
 

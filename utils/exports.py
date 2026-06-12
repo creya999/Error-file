@@ -12,10 +12,10 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 
 # ─── Brand colours ────────────────────────────────────────────────────────────
-ADBN_GREEN  = colors.HexColor('#1a6b3c')
-ADBN_LIGHT  = colors.HexColor('#e8f5e9')
-ADBN_WHITE  = colors.white
-ADBN_DARK   = colors.HexColor('#1a1a1a')
+ADBL_GREEN  = colors.HexColor('#1a6b3c')
+ADBL_LIGHT  = colors.HexColor('#e8f5e9')
+ADBL_WHITE  = colors.white
+ADBL_DARK   = colors.HexColor('#1a1a1a')
 
 
 def export_requests_pdf(requests_list, status_label='Approved'):
@@ -26,9 +26,9 @@ def export_requests_pdf(requests_list, status_label='Approved'):
                             topMargin=15*mm, bottomMargin=15*mm)
 
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle('title', fontSize=14, textColor=ADBN_GREEN,
+    title_style = ParagraphStyle('title', fontSize=14, textColor=ADBL_GREEN,
                                  alignment=TA_CENTER, fontName='Helvetica-Bold')
-    sub_style   = ParagraphStyle('sub', fontSize=9, textColor=ADBN_DARK,
+    sub_style   = ParagraphStyle('sub', fontSize=9, textColor=ADBL_DARK,
                                  alignment=TA_CENTER)
 
     elements = []
@@ -85,14 +85,14 @@ def export_requests_pdf(requests_list, status_label='Approved'):
     col_widths = [10*mm, 35*mm, 22*mm, 55*mm, 22*mm, 28*mm, 12*mm, 50*mm, 35*mm, 22*mm]
     table = Table(data, colWidths=col_widths, repeatRows=1)
     table.setStyle(TableStyle([
-        ('BACKGROUND',    (0, 0), (-1, 0),  ADBN_GREEN),
-        ('TEXTCOLOR',     (0, 0), (-1, 0),  ADBN_WHITE),
+        ('BACKGROUND',    (0, 0), (-1, 0),  ADBL_GREEN),
+        ('TEXTCOLOR',     (0, 0), (-1, 0),  ADBL_WHITE),
         ('FONTNAME',      (0, 0), (-1, 0),  'Helvetica-Bold'),
         ('FONTSIZE',      (0, 0), (-1, 0),  8),
         ('ALIGN',         (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN',        (0, 0), (-1, -1), 'MIDDLE'),
         ('FONTSIZE',      (0, 1), (-1, -1), 7),
-        ('ROWBACKGROUNDS',(0, 1), (-1, -1), [ADBN_WHITE, ADBN_LIGHT]),
+        ('ROWBACKGROUNDS',(0, 1), (-1, -1), [ADBL_WHITE, ADBL_LIGHT]),
         ('GRID',          (0, 0), (-1, -1), 0.3, colors.HexColor('#cccccc')),
         ('LEFTPADDING',   (0, 0), (-1, -1), 3),
         ('RIGHTPADDING',  (0, 0), (-1, -1), 3),
@@ -107,7 +107,7 @@ def export_requests_pdf(requests_list, status_label='Approved'):
     elements.append(Paragraph(
         f'Total Requests: {len(requests_list)}  |  Total Cards Requested: {total_qty}',
         ParagraphStyle('footer', fontSize=9, fontName='Helvetica-Bold',
-                       textColor=ADBN_GREEN, alignment=TA_LEFT)
+                       textColor=ADBL_GREEN, alignment=TA_LEFT)
     ))
 
     doc.build(elements)

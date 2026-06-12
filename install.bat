@@ -1,5 +1,5 @@
 @echo off
-title ADBN Instant Card System - Setup
+title ADBL Instant Card System - Setup
 color 0A
 
 echo ============================================================
@@ -140,7 +140,7 @@ echo.
 echo   Before starting, make sure:
 echo   1. SQL Server is running
 echo   2. Database exists in SSMS:
-echo        CREATE DATABASE adbn_instant_card;
+echo        CREATE DATABASE adbl_instant_card;
 echo   3. .env has correct DB credentials
 echo.
 echo   Then double-click start.bat to launch the app.
