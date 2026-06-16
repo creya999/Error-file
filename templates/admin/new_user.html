@@ -2,7 +2,7 @@
 {% block title %}Add New User – ADBL Admin{% endblock %}
 
 {% block head %}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='css/select2.min.css') }}" rel="stylesheet"/>
 <style>
   .select2-container--default .select2-selection--single {
     height: 38px; border: 1px solid #ced4da; border-radius: 6px;
@@ -132,8 +132,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/select2.min.js') }}"></script>
 <script>
   $('#branchSelect').select2({ placeholder: 'Search branch name or code...' });
   $('#branchSelect').on('change', function(){
